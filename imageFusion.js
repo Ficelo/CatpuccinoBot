@@ -33,48 +33,41 @@ export async function addProppellerHat(imagePath) {
     
     const resultPath = imagePath.split(".").at(1) + ".png"
     
-    await sharp("propeller.png")
+    const {data : hatBuffer} = await sharp("propeller.png")
     .resize({
         fit : sharp.fit.fill,
         width : 256,
         height : 192
     })
     .toBuffer({resolveWithObject : true})
-    .then(({data, info}) => {
-        sharp(imagePath)
-            .extend(
-                {
-                    top : 64,
-                    left : 0,
-                    right: 0,
-                    bottom : 0,
-                    background : {r : 0, g : 0, b : 0, alpha : 0}
-                }
-            )
-            .toFormat("png")
-            .composite(
-                [{
-                    input : data,
-                    top : 0,
-                    left : 0
-                }])
-            .toFile("." + resultPath, function(err) {
-                console.log("error : ", err)
-            });
-    })
-    .catch(err => {
-       console.log("error : ", err)
-    })
+
+
+    await sharp(imagePath)
+        .extend(
+            {
+                top : 64,
+                left : 0,
+                right: 0,
+                bottom : 0,
+                background : {r : 0, g : 0, b : 0, alpha : 0}
+            }
+        )
+        .toFormat("png")
+        .composite(
+            [{
+                input : hatBuffer,
+                top : 0,
+                left : 0
+            }])
+        .toFile("." + resultPath);
+  
 
     return "." + resultPath;
 
 }
 
-//addProppellerHat("ponker.jpg");
-
 export async function propellerize(character = { name: "ponker", code : 38173609}) {
     await getImageFromCode(character)
     const resultPath = await addProppellerHat(`./images/${character.name}.jpg`)
-    //await fs.promises.unlink(`./images/${character.name}.jpg`);
     return resultPath;
 }

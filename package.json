@@ -1,0 +1,17 @@
+{
+  "name": "text-xiv-js",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "puppeteer": "^24.22.0",
+    "sharp": "^0.34.4"
+  }
+}

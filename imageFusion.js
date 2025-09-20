@@ -33,7 +33,7 @@ export async function addProppellerHat(imagePath) {
     
     const resultPath = imagePath.split(".").at(1) + ".png"
     
-    sharp("propeller.png")
+    await sharp("propeller.png")
     .resize({
         fit : sharp.fit.fill,
         width : 256,
@@ -65,12 +65,16 @@ export async function addProppellerHat(imagePath) {
     .catch(err => {
        console.log("error : ", err)
     })
+
+    return "." + resultPath;
+
 }
 
 //addProppellerHat("ponker.jpg");
 
 export async function propellerize(character = { name: "ponker", code : 38173609}) {
     await getImageFromCode(character)
-    await addProppellerHat(`./images/${character.name}.jpg`)
+    const resultPath = await addProppellerHat(`./images/${character.name}.jpg`)
     //await fs.promises.unlink(`./images/${character.name}.jpg`);
+    return resultPath;
 }

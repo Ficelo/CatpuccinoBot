@@ -88,6 +88,31 @@ const reversedPatches = patches.reverse();
 const ponkerCode = 38173609;
 const MikelCode = 44351509;
 
+async function getCodeFromName(name, surname, server) {
+
+    const browser = await puppeteer.launch({headless: true});
+    const page = await browser.newPage();
+
+    await page.goto(`https://na.finalfantasyxiv.com/lodestone/community/search/?q=${name}+${surname}`);
+    await page.setViewport({width : 1080, height: 1024});
+
+    await page.waitForSelector('.frame__chara__name', {timeout: 10000});
+    //page.on("console", msg => console.log("PAGE LOG:", msg.text()));
+
+    const results = await page.$$eval('.entry__link--line', (res, server) => {
+        return res.map(a => {
+            const serverElement = a.querySelector('div.frame__chara__box > .frame__chara__world');
+            //console.log(`server : ${serverElement.textContent}`);
+            //console.log(`code : ${a.href.split("/").at(-2)}`);
+            if (serverElement && serverElement.textContent.toLowerCase().includes(server.toLowerCase())) return a.href.split("/").at(-2);
+            return null;
+        })
+    }, server);
+
+    await browser.close();
+
+    return (results[0]) ? results[0] : "";
+}
 
 async function getAllFcNames() {
 
@@ -158,27 +183,28 @@ async function checkLatestPatch(characterCode) {
     return "Achivements Hidden";
 }
 
-const members = await getAllFcNames();
+// const members = await getAllFcNames();
 
-for(let member of members) {
-    try {
-        //const patch = await checkLatestPatch(member.code)
-        if(member.name != "" && member.code != "") {
-            await propellerize(member);
-            console.log(`${member.name} propellerized`);
-        }
+// for(let member of members) {
+//     try {
+//         //const patch = await checkLatestPatch(member.code)
+//         if(member.name != "" && member.code != "") {
+//             await propellerize(member);
+//             console.log(`${member.name} propellerized`);
+//         }
         
-    } catch(err) {
-        console.log("error : ", err);
-    }
-}
+//     } catch(err) {
+//         console.log("error : ", err);
+//     }
+// }
 
-for(let member of members) {
-    try {
-        await fs.promises.unlink("./images/" + member.name + ".jpg");
-    } catch (err) {
-        console.log("error deleting : ", err);
-    }
-}
+// for(let member of members) {
+//     try {
+//         await fs.promises.unlink("./images/" + member.name + ".jpg");
+//     } catch (err) {
+//         console.log("error deleting : ", err);
+//     }
+// }
 
+//console.log(await getCodeFromName("ponker", "borgir", "raiden"));
 

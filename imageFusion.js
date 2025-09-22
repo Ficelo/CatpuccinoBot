@@ -33,7 +33,7 @@ export async function addProppellerHat(imagePath) {
     
     const resultPath = imagePath.split(".").at(1) + ".png"
     
-    const {data : hatBuffer} = await sharp("propeller.png")
+    const {data : hatBuffer} = await sharp("./hats/propeller.png")
     .resize({
         fit : sharp.fit.fill,
         width : 256,
@@ -66,8 +66,96 @@ export async function addProppellerHat(imagePath) {
 
 }
 
+export async function addNerd(imagePath) {
+    const resultPath = imagePath.split(".").at(1) + ".png"
+
+    const {data : fingerBuffer} = await sharp("./hats/finger.png")
+        .resize({
+            fit : sharp.fit.fill,
+            width : 128,
+            height : 128
+        })
+        .toBuffer({resolveWithObject : true})
+
+    const {data : glassesBuffer} = await sharp("./hats/nerd-glasses.png")
+        .resize({
+            fit: sharp.fit.fill,
+            width : 192,
+            height : 98
+        })
+        .toBuffer({resolveWithObject : true})
+
+    await sharp(imagePath)
+        .toFormat("png")
+        .composite([
+            {
+                input : glassesBuffer,
+                top : 98,
+                left : 32
+            },
+            {
+                input : fingerBuffer,
+                top : 128,
+                left: -32
+            }
+        ])
+        .toFile("." + resultPath)
+
+
+    return "." + resultPath;
+}
+
+export async function addDunce(imagePath) {
+   const {data : hatBuffer} = await sharp("./hats/dunce.png")
+    .resize({
+        fit : sharp.fit.fill,
+        width : 256,
+        height : 192
+    })
+    .toBuffer({resolveWithObject : true})
+
+    await sharp(imagePath)
+        .extend(
+            {
+                top : 64,
+                left : 0,
+                right: 0,
+                bottom : 0,
+                background : {r : 0, g : 0, b : 0, alpha : 0}
+            }
+        )
+        .toFormat("png")
+        .composite(
+            [{
+                input : hatBuffer,
+                top : 0,
+                left : 0
+            }])
+        .toFile("." + resultPath);
+  
+
+    return "." + resultPath;
+
+}
+
+export async function addDimmadome(imagePath) {
+
+}
+
 export async function propellerize(character = { name: "ponker", code : 38173609}) {
-    await getImageFromCode(character)
-    const resultPath = await addProppellerHat(`./images/${character.name}.jpg`)
+    await getImageFromCode(character);
+    const resultPath = await addProppellerHat(`./images/${character.name}.jpg`);
+    return resultPath;
+}
+
+export async function nerdify(character) {
+    await getImageFromCode(character);
+    const resultPath = await addNerd(`./images/${character.name}.jpg`);
+    return resultPath;
+}
+
+export async function duncify(character) {
+    await getImageFromCode(character);
+    const resultPath = await addDunce(`./images/${character.name}.jpg`);
     return resultPath;
 }

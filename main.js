@@ -88,7 +88,7 @@ const reversedPatches = patches.reverse();
 const ponkerCode = 38173609;
 const MikelCode = 44351509;
 
-async function getCodeFromName(name, surname, server) {
+export async function getCodeFromName(name, surname, server) {
 
     const browser = await puppeteer.launch({headless: true});
     const page = await browser.newPage();

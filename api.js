@@ -1,7 +1,30 @@
-import { getImageFromCode, addProppellerHat, propellerize } from "./imageFusion.js";
+import { getImageFromCode, addProppellerHat, propellerize, nerdify } from "./imageFusion.js";
+import { getCodeFromName } from "./main.js";
 import http from "http";
 import fs from "fs";
 import path from "path";
+
+const hatDict = {
+    "propeller" : propellerize,
+    "nerd" : nerdify
+}
+
+async function addHat(body, res) {
+    const resultPath = await hatDict[body.hat]({
+        name : (body.name == "" != body.surname != "") ? body.name + " " + body.surname : "default",
+        code : body.code
+    })
+
+    try {
+        const file = await fs.promises.readFile(path.resolve(resultPath));
+        res.writeHead(200, {"Content-Type" : "image/png"});
+        res.end(file);
+    } catch (err) {
+        res.writeHead(404);
+        res.end("An error occured : ", err.message);
+    }
+}
+
 
 http.createServer((req, res) => {
 
@@ -15,33 +38,17 @@ http.createServer((req, res) => {
             body = Buffer.concat(body).toString();
             body = JSON.parse(body);
 
-            if( body.code != "" || (body.name == "" != body.surname != "" && body.server != "")) {
-                
-                //TODO : implement getting the code from a name
+            console.log("body : ", body);
 
-                if(body.code != "") {
-                    const resultPath = await propellerize({
-                        name : (body.name == "" != body.surname != "") ? body.name + " " + body.surname : "default",
-                        code : body.code
-                    })
-
-                    try {
-                        const file = await fs.promises.readFile(path.resolve(resultPath));
-                        res.writeHead(200, {"Content-Type" : "image/png"});
-                        res.end(file);
-                    } catch (err) {
-                        res.writeHead(404);
-                        res.end("An error occured : ", err.message);
-                    }
-
-                } else {
-                    res.statusMessage = "Missing character code";
-                    res.writeHead(500, {"Content-Type" : "text/plain"});
-                    res.end();
-                }
-
+            if(body.code != "") {
+                console.log("code exits before")
+                await addHat(body, res);
+            } else if (body.name != "" && body.surname != "" && body.server != "") {
+                body.code = await getCodeFromName(body.name, body.surname, body.server);
+                console.log("code got : ", body);
+                await addHat(body, res);
             } else {
-                res.statusMessage = "Missing information";
+                res.statusMessage = "Missing character code";
                 res.writeHead(500, {"Content-Type" : "text/plain"});
                 res.end();
             }

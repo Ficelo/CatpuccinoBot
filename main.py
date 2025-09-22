@@ -21,12 +21,14 @@ async def on_ready():
 
 
 @bot.command()
-async def hat(ctx, name, surname, server, code, hat="propeller"):
+async def hat(ctx, name, surname, server, hat="propeller"):
 
     data = {
         "name" : name,
         "surname" : surname,
-        "code" : code
+        "server" : server,
+        "code" : "",
+        "hat" : hat
     }
 
     try :
@@ -49,18 +51,13 @@ async def hat(ctx, name, surname, server, code, hat="propeller"):
 
 
 @bot.command()
-async def getStoryPoint(ctx, messageLink):
+async def baguettereact(ctx):
+    
+    message = await ctx.channel.fetch_message(ctx.message.reference.message_id)
 
-    match = messageLinkRegex.match(messageLink)
-    if not match:
-        await ctx.send("Message link doesn't seem to be in the right format")
-        return
+    for _ in range(0, 10):
+        await message.channel.send("🥖", reference=message)
 
-    guild_id, channel_id, message_id = map(int, match.groups())
-    channel = bot.get_channel(channel_id)
-
-    msg = await channel.fetch_message(message_id)
-    await ctx.send(f"Fetched message: {api.getCharacterAchivements(msg.author.id)}")
 
 
 bot.run("MTM5NzYyNjM2MzAwNjk0NzQxOQ.GHL_lK.iZsrP3Sv6qdqgKur9fUSuEq3ygLA3GGnb3rj-M")

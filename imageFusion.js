@@ -106,18 +106,21 @@ export async function addNerd(imagePath) {
 }
 
 export async function addDunce(imagePath) {
-   const {data : hatBuffer} = await sharp("./hats/dunce.png")
+
+    const resultPath = imagePath.split(".").at(1) + ".png"
+
+    const {data : hatBuffer} = await sharp("./hats/dunce.png")
     .resize({
         fit : sharp.fit.fill,
-        width : 256,
-        height : 192
+        width : 192,
+        height : 228
     })
     .toBuffer({resolveWithObject : true})
 
     await sharp(imagePath)
         .extend(
             {
-                top : 64,
+                top : 96,
                 left : 0,
                 right: 0,
                 bottom : 0,
@@ -129,7 +132,7 @@ export async function addDunce(imagePath) {
             [{
                 input : hatBuffer,
                 top : 0,
-                left : 0
+                left : 32
             }])
         .toFile("." + resultPath);
   

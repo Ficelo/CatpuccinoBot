@@ -1,4 +1,4 @@
-import { getImageFromCode, addProppellerHat, propellerize, nerdify } from "./imageFusion.js";
+import {propellerize, nerdify, duncify } from "./imageFusion.js";
 import { getCodeFromName } from "./main.js";
 import http from "http";
 import fs from "fs";
@@ -6,7 +6,8 @@ import path from "path";
 
 const hatDict = {
     "propeller" : propellerize,
-    "nerd" : nerdify
+    "nerd" : nerdify,
+    "dunce" : duncify
 }
 
 async function addHat(body, res) {

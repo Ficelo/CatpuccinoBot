@@ -3,6 +3,10 @@ from discord.ext import commands
 import re
 import requests
 from io import BytesIO
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 descrption = "A banger bot to do some stuff in the Catputccino discord"
 
@@ -60,4 +64,4 @@ async def baguettereact(ctx):
 
 
 
-bot.run("MTM5NzYyNjM2MzAwNjk0NzQxOQ.GHL_lK.iZsrP3Sv6qdqgKur9fUSuEq3ygLA3GGnb3rj-M")
+bot.run(os.getenv("API_KEY"))

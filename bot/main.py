@@ -10,6 +10,8 @@ load_dotenv()
 
 descrption = "A banger bot to do some stuff in the Catputccino discord"
 
+api_url = os.getenv("API_URL", "http://localhost:3000")
+
 intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
@@ -36,7 +38,7 @@ async def hat(ctx, name, surname, server, hat="propeller"):
     }
 
     try :
-        response = requests.post("http://localhost:3000/hat", json=data)
+        response = requests.post(f"{api_url}/hat", json=data)
     except requests.exceptions.RequestException as err:
         await ctx.send(f"Error : {err}")
         return

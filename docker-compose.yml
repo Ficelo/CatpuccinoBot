@@ -1,0 +1,29 @@
+services:
+  node-api:
+    build: 
+      context: ./api
+      dockerfile: Dockerfile
+      args:
+        TARGETOS: linux
+        TARGETARCH: amd64
+    container_name: node-api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    platform: linux/amd64
+    shm_size: '1gb'
+    environment:
+      - NODE_ENV=production
+    
+
+
+  python-bot:
+    build: ./bot
+    container_name: python-bot
+    restart: unless-stopped
+    depends_on:
+      - node-api
+    env_file:
+      - ./bot/.env
+    environment:
+      API_URL: "http://node-api:3000"

@@ -90,11 +90,33 @@ const MikelCode = 44351509;
 
 export async function getCodeFromName(name, surname, server) {
 
-    const browser = await puppeteer.launch({headless: true});
+    const browser = await puppeteer.launch({
+        headless: true,
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-blink-features=AutomationControlled',
+            '--start-maximized'
+        ],
+        defaultViewport: null
+    });
+
     const page = await browser.newPage();
+
+    await page.setUserAgent(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
+        'AppleWebKit/537.36 (KHTML, like Gecko) ' +
+        'Chrome/120.0.0.0 Safari/537.36'
+    );
 
     await page.goto(`https://na.finalfantasyxiv.com/lodestone/community/search/?q=${name}+${surname}`);
     await page.setViewport({width : 1080, height: 1024});
+
+    
+
+    await page.screenshot({ path: `/usr/src/app/debug-${name}.png` });
 
     await page.waitForSelector('.frame__chara__name', {timeout: 10000});
     //page.on("console", msg => console.log("PAGE LOG:", msg.text()));
@@ -116,8 +138,26 @@ export async function getCodeFromName(name, surname, server) {
 
 async function getAllFcNames() {
 
-    const browser = await puppeteer.launch({headless : true});
+    const browser = await puppeteer.launch({
+        headless: true,
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-blink-features=AutomationControlled',
+            '--start-maximized'
+        ],
+        defaultViewport: null
+    });
+
     const page = await browser.newPage();
+
+    await page.setUserAgent(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
+        'AppleWebKit/537.36 (KHTML, like Gecko) ' +
+        'Chrome/120.0.0.0 Safari/537.36'
+    );
 
     await page.goto(`https://eu.finalfantasyxiv.com/lodestone/freecompany/9280089244661998516/member/`);
     await page.setViewport({width: 1080, height: 1024});
@@ -159,8 +199,26 @@ async function getAllFcNames() {
 
 async function checkLatestPatch(characterCode) {
 
-    const browser = await puppeteer.launch({headless : true});
+    const browser = await puppeteer.launch({
+        headless: true,
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-blink-features=AutomationControlled',
+            '--start-maximized'
+        ],
+        defaultViewport: null
+    });
+
     const page = await browser.newPage();
+
+    await page.setUserAgent(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
+        'AppleWebKit/537.36 (KHTML, like Gecko) ' +
+        'Chrome/120.0.0.0 Safari/537.36'
+    );
 
     await page.goto(`https://eu.finalfantasyxiv.com/lodestone/character/${characterCode}/achievement/category/76/#anchor_achievement`, {waitUntil: "domcontentloaded"})
     await page.setViewport({width: 1080, height: 1024});

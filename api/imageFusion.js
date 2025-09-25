@@ -7,8 +7,26 @@ const ponker = {name : "Ponker Borgir", code : "38173609"}
 
 export async function getImageFromCode(character) {
 
-    const browser = await puppeteer.launch({headless : true});
+    const browser = await puppeteer.launch({
+        headless: true,
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-blink-features=AutomationControlled',
+            '--start-maximized'
+        ],
+        defaultViewport: null
+    });
+
     const page = await browser.newPage();
+
+    await page.setUserAgent(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
+        'AppleWebKit/537.36 (KHTML, like Gecko) ' +
+        'Chrome/120.0.0.0 Safari/537.36'
+    );
 
     await page.goto(`https://eu.finalfantasyxiv.com/lodestone/character/${character.code}/`);
     await page.setViewport({width : 1080, height: 1024});

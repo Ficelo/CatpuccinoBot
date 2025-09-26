@@ -241,28 +241,3 @@ async function checkLatestPatch(characterCode) {
     return "Achivements Hidden";
 }
 
-// const members = await getAllFcNames();
-
-// for(let member of members) {
-//     try {
-//         //const patch = await checkLatestPatch(member.code)
-//         if(member.name != "" && member.code != "") {
-//             await propellerize(member);
-//             console.log(`${member.name} propellerized`);
-//         }
-        
-//     } catch(err) {
-//         console.log("error : ", err);
-//     }
-// }
-
-// for(let member of members) {
-//     try {
-//         await fs.promises.unlink("./images/" + member.name + ".jpg");
-//     } catch (err) {
-//         console.log("error deleting : ", err);
-//     }
-// }
-
-//console.log(await getCodeFromName("ponker", "borgir", "raiden"));
-

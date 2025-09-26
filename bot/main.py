@@ -55,7 +55,6 @@ async def hat(ctx, name, surname, server, hat="propeller"):
     img_bytes.seek(0)
     await ctx.send(file=discord.File(img_bytes, filename="hat.png"))
 
-
 @bot.command()
 async def baguettereact(ctx):
     

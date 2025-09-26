@@ -5,6 +5,7 @@ import requests
 from io import BytesIO
 from dotenv import load_dotenv
 import os
+import time
 
 load_dotenv()
 
@@ -55,6 +56,56 @@ async def hat(ctx, name, surname, server, hat="propeller"):
     img_bytes.seek(0)
     await ctx.send(file=discord.File(img_bytes, filename="hat.png"))
 
+@bot.command()
+async def patchnotes(ctx, patch):
+
+    await ctx.send("Uuuuh lemme think real quick")
+    await ctx.send(file=discord.File("./images/monkey.png"))
+    await ctx.send("Getting patch notes from the lodestone...")
+
+    time.sleep(3)
+
+    embed = discord.Embed(
+        title = f"=== PATCH NOTES FOR PATCH {patch} ==="
+    )
+
+    embed.add_field(name="Warrior", value="I dunno nerf it or something", inline=False)
+    embed.add_field(name="Paladin", value="man idk give them one more confiteor combo", inline=False)
+    embed.add_field(name="Dark knight", value="Nerfed oblation coz tbn too good", inline=False)
+    embed.add_field(name="Gunbreaker", value="Like 1000 more potency on every gcd", inline=False)
+    
+    embed.add_field(name="", value="", inline=False)
+
+    embed.add_field(name="Dragoon", value="Aura farming will now boost damage for 10 seconds", inline=False)
+    embed.add_field(name="Monk", value="Uuuh monk rework", inline=False)
+    embed.add_field(name="Ninja", value="Man idk who even plays ninja", inline=False)
+    embed.add_field(name="Samurai", value="Re-added kaiten", inline=False)
+    embed.add_field(name="Reaper", value="The game will now detect if you are listening to evanescence and give you a damage buff accordingly", inline=False)
+    embed.add_field(name="Viper", value="Removed positionals as the job was too hard to play", inline=False)
+
+    embed.add_field(name="", value="", inline=False)
+
+    embed.add_field(name="Black mage", value="Added a third charge to ley lines", inline=False)
+    embed.add_field(name="Summoner", value="Job is getting removed go play a real job", inline=False)
+    embed.add_field(name="Reg mage", value="Red mage will now gain a damage buff if a melee job is forced into a ranged position", inline=False)
+    embed.add_field(name="Pictomancer", value="Pictomancer now has a 10% buff to all it's skill when in an ultimate", inline=False)
+
+    embed.add_field(name="", value="", inline=False)
+
+    embed.add_field(name="Bard", value="Added one more random proc", inline=False)
+    embed.add_field(name="Machinist", value="LMAOOOOOOO", inline=False)
+    embed.add_field(name="Dancer", value="3 more en avant charges less go gang", inline=False)
+
+    embed.add_field(name="", value="", inline=False)
+
+    embed.add_field(name="White mage", value="Glare will now be weakened every time a healing spell is cast", inline=False)
+    embed.add_field(name="Scholar", value="Removed the speed boost on Expediant since the job was too mobile", inline=False)
+    embed.add_field(name="Astrologian", value="Removed cards and added schizophrenia", inline=False)
+    embed.add_field(name="Sage", value="Sages will now be executed if they don't have kardia on a party member", inline=False)
+
+    await ctx.send(embed=embed)
+
+    
 @bot.command()
 async def baguettereact(ctx):
     

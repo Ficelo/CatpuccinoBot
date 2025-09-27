@@ -1,11 +1,13 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 import re
 import requests
 from io import BytesIO
 from dotenv import load_dotenv
 import os
 import time
+from datetime import datetime, timezone
+
 
 load_dotenv()
 
@@ -25,7 +27,15 @@ messageLinkRegex = re.compile(r"https://discord.com/channels/(\d+)/(\d+)/(\d+)")
 @bot.event
 async def on_ready():
     print(f'We have logged in as {bot.user}')
+    if not update_server_time.is_running():
+        update_server_time.start()
 
+
+@tasks.loop(seconds=60)
+async def update_server_time():
+    server_time = datetime.now(timezone.utc).strftime("%H:%M")
+    await bot.change_presence(activity=discord.CustomActivity(name=f"Server time : {server_time}"))
+    print(f"Status changed to : Server time : {server_time}")
 
 @bot.command()
 async def hat(ctx, name, surname, server, hat="propeller"):

@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 import os
 import time
 from datetime import datetime, timezone
+import random
 
 
 load_dotenv()
@@ -36,6 +37,18 @@ async def update_server_time():
     server_time = datetime.now(timezone.utc).strftime("%H:%M")
     await bot.change_presence(activity=discord.CustomActivity(name=f"Server time : {server_time}"))
     print(f"Status changed to : Server time : {server_time}")
+
+
+@bot.listen('on_message')
+async def on_message(message):
+    if message.author == bot.user:
+        return
+    
+    if message.content == "$wa":
+        chance = 5;
+        if random.randint(1, 100) <= chance:
+            await message.reply(file=discord.File("./images/dog.png"))
+
 
 @bot.command()
 async def hat(ctx, name, surname, server, hat="propeller"):

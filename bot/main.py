@@ -49,6 +49,16 @@ async def on_message(message):
         if random.randint(1, 100) <= chance:
             await message.reply(file=discord.File("./images/dog.png"))
 
+    if "invisible" in message.content.lower():
+        await message.reply(file=discord.File("./images/invisible.gif"))
+
+    if "perfect" in message.content.lower():
+        await message.reply("DID SOMEONE SAY PERFECT ????")
+        await message.reply("TIME FOR THE GOOOOAAAAT")
+        await message.reply(file=discord.File("./images/alexander1.jpg"))
+        await message.reply(file=discord.File("./images/alexander2.png"))
+        await message.reply(file=discord.File("./images/alexander3.png"))
+        await message.reply("RAAAAAAAAAAAAAA")
 
 @bot.command()
 async def hat(ctx, name, surname, server, hat="propeller"):

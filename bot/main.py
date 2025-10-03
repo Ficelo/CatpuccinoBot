@@ -60,6 +60,54 @@ async def on_message(message):
         await message.reply(file=discord.File("./images/alexander3.png"))
         await message.reply("RAAAAAAAAAAAAAA")
 
+    
+# ADD A NEW COMMAND TO TEST COMPATIBILITY
+# VALUE COMES FROM SOME SORT OF HASH OF THE TWO NAMES
+# ADD A FEATURE SO THAT IT CAN BE ANYTHING LIKE PONKER & PERFECT ALEXANDER
+# USE "" FOR THE ARGS TO DODGE WEIRD LOGIC
+
+@bot.command()
+async def compatibility(ctx, thing1, thing2, mode=""):
+
+    # -o for other on the second one
+    
+    thing1List = thing1.split(" ")
+
+    if mode == "":
+
+        thing2List = thing2.split(" ")
+        data = {
+            "thing1" : {"name" : thing1List[0], "surname" : thing1List[1], "server": thing1List[2]},
+            "thing2" : {"name" : thing2List[0], "surname" : thing2List[1], "server": thing2List[2]},
+            "mode" : mode
+        }
+    else :
+        data = {
+            "thing1" : {"name" : thing1List[0], "surname" : thing1List[1], "server": thing1List[2]},
+            "thing2" : thing2,
+            "mode" : mode
+        }
+
+    try:
+        response = requests.post(f"{api_url}/compatibility", json=data)
+    except requests.exceptions.RequestException as err:
+        await ctx.send(f"Error : {err}")
+
+    if response.status_code != 200:
+        text = response.text if response.text else f"Status {response.status_code}"
+        MAX = 3000
+        if len(text) > MAX:
+            text = text[:MAX] + "\n\n...(truncated)"
+        await ctx.send(f"Server error: {text}")
+        return
+    
+    img_bytes = BytesIO(response.content)
+    img_bytes.seek(0)
+    await ctx.send(file=discord.File(img_bytes, filename="compatibility.png"))
+
+    
+
+
 @bot.command()
 async def hat(ctx, name, surname, server, hat="propeller"):
 
@@ -76,6 +124,7 @@ async def hat(ctx, name, surname, server, hat="propeller"):
     except requests.exceptions.RequestException as err:
         await ctx.send(f"Error : {err}")
         return
+
 
     if response.status_code != 200:
         text = response.text if response.text else f"Status {response.status_code}"

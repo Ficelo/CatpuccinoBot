@@ -2,6 +2,8 @@ import puppeteer from "puppeteer";
 import fs from "fs";
 import https from "https";
 import sharp from "sharp";
+import crypto from "crypto";
+import fetch from "node-fetch";
 
 const ponker = {name : "Ponker Borgir", code : "38173609"}
 
@@ -45,7 +47,53 @@ export async function getImageFromCode(character) {
     })
 
     await browser.close();
+
+    return `./images/${character.name}.jpg`;
 }
+
+async function getOtherImagePath(other) {
+    const headers = {
+        "User-Agent": "MyApp/1.0 (https://example.com; myemail@example.com)"
+    };
+
+    async function fetchImage(title) {
+        const apiUrl = `https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&titles=${encodeURIComponent(title)}`;
+        const response = await fetch(apiUrl, { headers });
+        if (!response.ok) throw new Error(`Failed to fetch page info: ${response.status}`);
+        const data = await response.json();
+
+        const pageId = Object.keys(data.query.pages)[0];
+        if (data.query.pages[pageId].original?.source) {
+            return data.query.pages[pageId].original.source;
+        }
+        return null;
+    }
+
+    let imageUrl = await fetchImage(other);
+
+    if (!imageUrl) {
+        const searchUrl = `https://en.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(other)}&limit=1&namespace=0&format=json`;
+        const searchRes = await fetch(searchUrl, { headers });
+        if (!searchRes.ok) throw new Error(`Search failed: ${searchRes.status}`);
+        const searchData = await searchRes.json();
+        const closestTitle = searchData[1][0];
+        if (!closestTitle) throw new Error("No matching Wikipedia articles found");
+        imageUrl = await fetchImage(closestTitle);
+        if (!imageUrl) throw new Error("Closest article has no image");
+        other = closestTitle;
+    }
+
+    const ext = imageUrl.split(".").at(-1);
+    const filePath = `./images/${other}.${ext}`;
+
+    const imageRes = await fetch(imageUrl, { headers });
+    if (!imageRes.ok) throw new Error(`Failed to download image: ${imageRes.status}`);
+    const buffer = await imageRes.arrayBuffer();
+    fs.writeFileSync(filePath, Buffer.from(buffer));
+
+    return filePath;
+}
+
 
 export async function addProppellerHat(imagePath) {
     
@@ -197,6 +245,87 @@ export async function addDimmadome(imagePath) {
 
 }
 
+function getRandomPercent(image1Path, image2Path) {
+
+    const combined = [image1Path, image2Path].sort().join("|");
+    const hash = crypto.createHash("md5").update(combined).digest("hex");
+    const num = parseInt(hash.slice(0, 8), 16);
+    const percent = num % 101;
+    return percent + "%";
+
+}
+
+export async function makeCompatibility(image1Path, image2Path) {
+
+    const resultPath = "/compatibility" + ".png"
+
+    const text = getRandomPercent(image1Path, image2Path);
+
+    const textedSVG = Buffer.from(
+        `<svg width="500" height="100">
+            <text x="50%" y="50%" font-size="40" fill="white" text-anchor="middle" dominant-baseline="middle">
+                ${text}
+            </text>
+        </svg>`
+    );
+
+    const {data : char1Buffer} = await sharp(image1Path)
+        .toFormat("png")
+        .resize({
+            fit : sharp.fit.fill,
+            width : 256,
+            height : 256
+        })
+        .toBuffer({resolveWithObject : true});
+
+    const {data : char2Buffer} = await sharp(image2Path)
+        .toFormat("png")
+        .resize({
+            fit : sharp.fit.fill,
+            width : 256,
+            height : 256
+        })
+        .toBuffer({resolveWithObject : true});
+
+    const {data : heartBuffer} = await sharp("./hats/heart.png")
+        .toFormat("png")
+        .resize({
+            fit : sharp.fit.fill,
+            width : 256,
+            height : 256
+        })
+        .toBuffer({resolveWithObject : true});
+    
+    await sharp("./bases/base 512.png")
+        .toFormat("png")
+        .composite([
+            {
+                input : char1Buffer,
+                top : 0,
+                left : 0
+            },
+            {
+                input : char2Buffer,
+                top : 0,
+                left : 256
+            },
+            {
+                input : heartBuffer,
+                top : 0,
+                left : 128
+            },
+            {
+                input : textedSVG,
+                gravity : "center"
+            }
+        ])
+        .toFile("." + resultPath)
+
+    return "." + resultPath;
+
+}
+
+
 export async function propellerize(character = { name: "ponker", code : 38173609}) {
     await getImageFromCode(character);
     const resultPath = await addProppellerHat(`./images/${character.name}.jpg`);
@@ -218,5 +347,30 @@ export async function duncify(character) {
 export async function dimmadomify(character) {
     await getImageFromCode(character);
     const resultPath = await addDimmadome(`./images/${character.name}.jpg`);
+    return resultPath;
+}
+
+export async function makeCompatibility2characters(character1, character2) {
+
+    // Change this it's kinda sus
+
+    const image1Path = await getImageFromCode(character1);
+    console.log("Got image 1 : " + image1Path);
+    const image2Path = await getImageFromCode(character2);
+    console.log("Got image 2 : " + image2Path)
+
+    const resultPath = await makeCompatibility(image1Path, image2Path);
+    return resultPath;
+
+}
+
+export async function makeCompatibilityOther(character1, other) {
+
+    const image1Path = await getImageFromCode(character1);
+    console.log("Got image 1 : " + image1Path);
+    const image2Path = await getOtherImagePath(other);
+    console.log("Got image 2 : " + image2Path);
+
+    const resultPath = await makeCompatibility(image1Path, image2Path);
     return resultPath;
 }

@@ -70,15 +70,23 @@ async def on_message(message):
 async def compatibility(ctx, thing1, thing2, mode=""):
 
     # -o for other on the second one
-
+    
     thing1List = thing1.split(" ")
-    thing2List = thing2.split(" ")
 
-    data = {
-        "thing1" : {"name" : thing1List[0], "surname" : thing1List[1], "server": thing1List[2]},
-        "thing2" : {"name" : thing2List[0], "surname" : thing2List[1], "server": thing2List[2]},
-        "mode" : mode
-    }
+    if mode == "":
+
+        thing2List = thing2.split(" ")
+        data = {
+            "thing1" : {"name" : thing1List[0], "surname" : thing1List[1], "server": thing1List[2]},
+            "thing2" : {"name" : thing2List[0], "surname" : thing2List[1], "server": thing2List[2]},
+            "mode" : mode
+        }
+    else :
+        data = {
+            "thing1" : {"name" : thing1List[0], "surname" : thing1List[1], "server": thing1List[2]},
+            "thing2" : thing2,
+            "mode" : mode
+        }
 
     try:
         response = requests.post(f"{api_url}/compatibility", json=data)

@@ -1,4 +1,4 @@
-import {propellerize, nerdify, duncify, dimmadomify, makeCompatibility2characters} from "./imageFusion.js";
+import {propellerize, nerdify, duncify, dimmadomify, makeCompatibility2characters, makeCompatibilityOther} from "./imageFusion.js";
 import {getCodeFromName} from "./main.js";
 import http from "http";
 import fs from "fs";
@@ -35,7 +35,7 @@ async function getCompatibility(body, res) {
     if (body.mode == "") {
         resultPath = await makeCompatibility2characters(body.thing1, body.thing2);
     } else if (body.mode == "-o") {
-        // await resultPath = someOtherfunction
+        resultPath = await makeCompatibilityOther(body.thing1, body.thing2);
     }
 
     try {

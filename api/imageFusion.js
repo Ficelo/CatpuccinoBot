@@ -2,6 +2,8 @@ import puppeteer from "puppeteer";
 import fs from "fs";
 import https from "https";
 import sharp from "sharp";
+import crypto from "crypto";
+import fetch from "node-fetch";
 
 const ponker = {name : "Ponker Borgir", code : "38173609"}
 
@@ -48,6 +50,50 @@ export async function getImageFromCode(character) {
 
     return `./images/${character.name}.jpg`;
 }
+
+async function getOtherImagePath(other) {
+    const headers = {
+        "User-Agent": "MyApp/1.0 (https://example.com; myemail@example.com)"
+    };
+
+    async function fetchImage(title) {
+        const apiUrl = `https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&titles=${encodeURIComponent(title)}`;
+        const response = await fetch(apiUrl, { headers });
+        if (!response.ok) throw new Error(`Failed to fetch page info: ${response.status}`);
+        const data = await response.json();
+
+        const pageId = Object.keys(data.query.pages)[0];
+        if (data.query.pages[pageId].original?.source) {
+            return data.query.pages[pageId].original.source;
+        }
+        return null;
+    }
+
+    let imageUrl = await fetchImage(other);
+
+    if (!imageUrl) {
+        const searchUrl = `https://en.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(other)}&limit=1&namespace=0&format=json`;
+        const searchRes = await fetch(searchUrl, { headers });
+        if (!searchRes.ok) throw new Error(`Search failed: ${searchRes.status}`);
+        const searchData = await searchRes.json();
+        const closestTitle = searchData[1][0];
+        if (!closestTitle) throw new Error("No matching Wikipedia articles found");
+        imageUrl = await fetchImage(closestTitle);
+        if (!imageUrl) throw new Error("Closest article has no image");
+        other = closestTitle;
+    }
+
+    const ext = imageUrl.split(".").at(-1);
+    const filePath = `./images/${other}.${ext}`;
+
+    const imageRes = await fetch(imageUrl, { headers });
+    if (!imageRes.ok) throw new Error(`Failed to download image: ${imageRes.status}`);
+    const buffer = await imageRes.arrayBuffer();
+    fs.writeFileSync(filePath, Buffer.from(buffer));
+
+    return filePath;
+}
+
 
 export async function addProppellerHat(imagePath) {
     
@@ -320,6 +366,11 @@ export async function makeCompatibility2characters(character1, character2) {
 
 export async function makeCompatibilityOther(character1, other) {
 
+    const image1Path = await getImageFromCode(character1);
+    console.log("Got image 1 : " + image1Path);
+    const image2Path = await getOtherImagePath(other);
+    console.log("Got image 2 : " + image2Path);
 
-
+    const resultPath = await makeCompatibility(image1Path, image2Path);
+    return resultPath;
 }

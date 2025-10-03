@@ -45,6 +45,8 @@ export async function getImageFromCode(character) {
     })
 
     await browser.close();
+
+    return `./images/${character.name}.jpg`;
 }
 
 export async function addProppellerHat(imagePath) {
@@ -197,6 +199,87 @@ export async function addDimmadome(imagePath) {
 
 }
 
+function getRandomPercent(image1Path, image2Path) {
+
+    const combined = [image1Path, image2Path].sort().join("|");
+    const hash = crypto.createHash("md5").update(combined).digest("hex");
+    const num = parseInt(hash.slice(0, 8), 16);
+    const percent = num % 101;
+    return percent + "%";
+
+}
+
+export async function makeCompatibility(image1Path, image2Path) {
+
+    const resultPath = "/compatibility" + ".png"
+
+    const text = getRandomPercent(image1Path, image2Path);
+
+    const textedSVG = Buffer.from(
+        `<svg width="500" height="100">
+            <text x="50%" y="50%" font-size="40" fill="white" text-anchor="middle" dominant-baseline="middle">
+                ${text}
+            </text>
+        </svg>`
+    );
+
+    const {data : char1Buffer} = await sharp(image1Path)
+        .toFormat("png")
+        .resize({
+            fit : sharp.fit.fill,
+            width : 256,
+            height : 256
+        })
+        .toBuffer({resolveWithObject : true});
+
+    const {data : char2Buffer} = await sharp(image2Path)
+        .toFormat("png")
+        .resize({
+            fit : sharp.fit.fill,
+            width : 256,
+            height : 256
+        })
+        .toBuffer({resolveWithObject : true});
+
+    const {data : heartBuffer} = await sharp("./hats/heart.png")
+        .toFormat("png")
+        .resize({
+            fit : sharp.fit.fill,
+            width : 256,
+            height : 256
+        })
+        .toBuffer({resolveWithObject : true});
+    
+    await sharp("./bases/base 512.png")
+        .toFormat("png")
+        .composite([
+            {
+                input : char1Buffer,
+                top : 0,
+                left : 0
+            },
+            {
+                input : char2Buffer,
+                top : 0,
+                left : 256
+            },
+            {
+                input : heartBuffer,
+                top : 0,
+                left : 128
+            },
+            {
+                input : textedSVG,
+                gravity : "center"
+            }
+        ])
+        .toFile("." + resultPath)
+
+    return "." + resultPath;
+
+}
+
+
 export async function propellerize(character = { name: "ponker", code : 38173609}) {
     await getImageFromCode(character);
     const resultPath = await addProppellerHat(`./images/${character.name}.jpg`);
@@ -219,4 +302,24 @@ export async function dimmadomify(character) {
     await getImageFromCode(character);
     const resultPath = await addDimmadome(`./images/${character.name}.jpg`);
     return resultPath;
+}
+
+export async function makeCompatibility2characters(character1, character2) {
+
+    // Change this it's kinda sus
+
+    const image1Path = await getImageFromCode(character1);
+    console.log("Got image 1 : " + image1Path);
+    const image2Path = await getImageFromCode(character2);
+    console.log("Got image 2 : " + image2Path)
+
+    const resultPath = await makeCompatibility(image1Path, image2Path);
+    return resultPath;
+
+}
+
+export async function makeCompatibilityOther(character1, other) {
+
+
+
 }

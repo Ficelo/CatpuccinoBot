@@ -1,4 +1,4 @@
-import {propellerize, nerdify, duncify, dimmadomify} from "./imageFusion.js";
+import {propellerize, nerdify, duncify, dimmadomify, makeCompatibility2characters} from "./imageFusion.js";
 import {getCodeFromName} from "./main.js";
 import http from "http";
 import fs from "fs";
@@ -28,16 +28,18 @@ async function addHat(body, res) {
 }
 
 async function getCompatibility(body, res) {
-    const resultPath = ""
+    let resultPath = ""
+
+    console.log("In get compativility")
 
     if (body.mode == "") {
-        // await resultPath = somefunction
+        resultPath = await makeCompatibility2characters(body.thing1, body.thing2);
     } else if (body.mode == "-o") {
         // await resultPath = someOtherfunction
     }
 
     try {
-        const file = fs.promises.readFile(path.resolve(resultPath));
+        const file = await fs.promises.readFile(path.resolve(resultPath));
         res.writeHead(200, {"Content-Type" : "image/png"});
         res.end(file);
     } catch (err) {
@@ -90,12 +92,14 @@ http.createServer((req, res) => {
             if(body.thing1.name && body.thing1.surname && body.thing1.server) {
 
                 body.thing1.code = await getCodeFromName(body.thing1.name, body.thing1.surname, body.thing1.server);
+                console.log("Got code 1");
 
                 if(body.mode == "") {
                     
                     if(body.thing2.name && body.thing2.surname && body.thing2.server) {
                         
                         body.thing2.code = await getCodeFromName(body.thing2.name, body.thing2.surname, body.thing2.server);
+                        console.log("Got code 2");
                         await getCompatibility(body, res);
 
                     } else {

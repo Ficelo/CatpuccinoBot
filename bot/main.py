@@ -39,6 +39,32 @@ async def update_server_time():
     print(f"Status changed to : Server time : {server_time}")
 
 
+async def la_queefa(message):
+
+    # Spaghetti but idc
+
+    laqueefa = "laqueefa"
+    text = list(message.content.lower())
+    current = 0
+    temp_queef = ""
+    letter_indexes = []
+
+    for i in range(0, len(text)):
+        if current < len(laqueefa) and  text[i] == laqueefa[current]:
+            letter_indexes.append(i)
+            temp_queef += laqueefa[current]
+            current += 1
+
+    if temp_queef == laqueefa:
+        for i in range(0, len(text)):
+            if i not in letter_indexes:
+                text[i] = " "
+    
+        final_text = "".join(str(l) for l in text)
+
+        await message.reply(final_text)
+
+
 @bot.listen('on_message')
 async def on_message(message):
     if message.author == bot.user:
@@ -60,11 +86,7 @@ async def on_message(message):
         await message.reply(file=discord.File("./images/alexander3.png"))
         await message.reply("RAAAAAAAAAAAAAA")
 
-    
-# ADD A NEW COMMAND TO TEST COMPATIBILITY
-# VALUE COMES FROM SOME SORT OF HASH OF THE TWO NAMES
-# ADD A FEATURE SO THAT IT CAN BE ANYTHING LIKE PONKER & PERFECT ALEXANDER
-# USE "" FOR THE ARGS TO DODGE WEIRD LOGIC
+    await la_queefa(message)
 
 @bot.command()
 async def compatibility(ctx, thing1, thing2, mode=""):

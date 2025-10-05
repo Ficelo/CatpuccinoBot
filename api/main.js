@@ -89,53 +89,60 @@ const ponkerCode = 38173609;
 const MikelCode = 44351509;
 
 export async function getCodeFromName(name, surname, server) {
+  const browser = await puppeteer.launch({
+    headless: true,
+    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-blink-features=AutomationControlled',
+      '--start-maximized',
+    ],
+    defaultViewport: null,
+  });
 
-    const browser = await puppeteer.launch({
-        headless: true,
-        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
-        args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-blink-features=AutomationControlled',
-            '--start-maximized'
-        ],
-        defaultViewport: null
-    });
+  const page = await browser.newPage();
 
-    const page = await browser.newPage();
+  await page.setUserAgent(
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
+    'AppleWebKit/537.36 (KHTML, like Gecko) ' +
+    'Chrome/120.0.0.0 Safari/537.36'
+  );
 
-    await page.setUserAgent(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
-        'AppleWebKit/537.36 (KHTML, like Gecko) ' +
-        'Chrome/120.0.0.0 Safari/537.36'
-    );
+  const url = `https://na.finalfantasyxiv.com/lodestone/community/search/?q=${name}+${surname}`;
+  await page.goto(url, { waitUntil: 'domcontentloaded' });
+  await page.setViewport({ width: 1080, height: 1024 });
 
-    await page.goto(`https://na.finalfantasyxiv.com/lodestone/community/search/?q=${name}+${surname}`);
-    await page.setViewport({width : 1080, height: 1024});
+  await page.waitForSelector('.frame__chara__name', { timeout: 15000 });
 
-    
+  let previousHeight;
+  for (let i = 0; i < 10; i++) {
+    previousHeight = await page.evaluate('document.body.scrollHeight');
+    await page.evaluate('window.scrollTo(0, document.body.scrollHeight)');
 
-    await page.screenshot({ path: `/usr/src/app/debug-${name}.png` });
+    const newHeight = await page.evaluate('document.body.scrollHeight');
+    if (newHeight === previousHeight) {
+      console.log('Finished scrolling');
+      break;
+    }
+  }
 
-    await page.waitForSelector('.frame__chara__name', {timeout: 10000});
-    //page.on("console", msg => console.log("PAGE LOG:", msg.text()));
+  await page.screenshot({ path: `/usr/src/app/debug-${name}.png`, fullPage: true });
 
-    const results = await page.$$eval('.entry__link--line', (res, server) => {
-        return res.map(a => {
-            const serverElement = a.querySelector('div.frame__chara__box > .frame__chara__world');
-            //console.log(`server : ${serverElement.textContent}`);
-            //console.log(`code : ${a.href.split("/").at(-2)}`);
-            if (serverElement && serverElement.textContent.toLowerCase().includes(server.toLowerCase())) return a.href.split("/").at(-2);
-            return null;
-        })
-    }, server);
+  const results = await page.$$eval('.entry__link--line', (res, server) => {
+    return res.map(a => {
+      const serverElement = a.querySelector('div.frame__chara__box > .frame__chara__world');
+      if (serverElement && serverElement.textContent.toLowerCase().includes(server.toLowerCase())) {
+        return a.href.split("/").at(-2);
+      }
+      return null;
+    }).filter(Boolean);
+  }, server);
 
-    await browser.close();
-
-    return (results[0]) ? results[0] : "";
+  await browser.close();
+  return results[0] || "";
 }
-
 async function getAllFcNames() {
 
     const browser = await puppeteer.launch({

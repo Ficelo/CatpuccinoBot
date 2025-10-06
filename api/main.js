@@ -84,11 +84,69 @@ const fcMembers = [
     {name : "", code : ""}
 ]
 
+const dc_from_server = {
+  // Aether
+  "adamantoise" : "dc_Aether",
+  "cactuar" : "dc_Aether",
+  "faerie" : "dc_Aether",
+  "gilgamesh" : "dc_Aether",
+  "jenova" : "dc_Aether",
+  "midgardsormr" : "dc_Aether",
+  "sargatanas" : "dc_Aether",
+  "siren" : "dc_Aether",
+  // Crystal
+  "balmung" : "dc_Crystal",
+  "brynhildr" : "dc_Crystal",
+  "coeurl" : "dc_Crystal",
+  "diabolos" : "dc_Crystal",
+  "goblin" : "dc_Crystal",
+  "malboro" : "dc_Crystal",
+  "mateus" : "dc_Crystal",
+  "zalera" : "dc_Crystal",
+  // Primal
+  "behemoth" : "dc_Primal",
+  "excalibur" : "dc_Primal",
+  "exodus" : "dc_Primal",
+  "famfrit" : "dc_Primal",
+  "hyperion" : "dc_Primal",
+  "lamia" : "dc_Primal",
+  "leviathan" : "dc_Primal",
+  "ultros" : "dc_Primal",
+  // Dynamis
+  "halicarnassus" : "dc_Dynamis",
+  "maduin" : "dc_Dynamis",
+  "marilith" : "dc_Dynamis",
+  "seraph" : "dc_Dynamis",
+  "cuchulainn" : "dc_Dynamis",
+  "golem" : "dc_Dynamis",
+  "kraken" : "dc_Dynamis",
+  "rafflesia" : "dc_Dynamis",
+  // Chaos
+  "cerberus" : "dc_Dynamis",
+  "louisoix" : "dc_Dynamis",
+  "moogle" : "dc_Dynamis",
+  "omega" : "dc_Dynamis",
+  "phantom" : "dc_Dynamis",
+  "ragnarok" : "dc_Dynamis",
+  "sagittarius" : "dc_Dynamis",
+  "spriggan" : "dc_Dynamis",
+  // Light
+  "raiden" : "dc_Light",
+  "alpha" : "dc_Light",
+  "lich" : "dc_Light",
+  "odin" : "dc_Light",
+  "phoenix" : "dc_Light",
+  "shiva" : "dc_Light",
+  "twintania" : "dc_Light",
+  "zodiark" : "dc_Light",
+} 
+
 const reversedPatches = patches.reverse();
 const ponkerCode = 38173609;
 const MikelCode = 44351509;
 
 export async function getCodeFromName(name, surname, server) {
+
   const browser = await puppeteer.launch({
     headless: true,
     executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
@@ -110,39 +168,27 @@ export async function getCodeFromName(name, surname, server) {
     'Chrome/120.0.0.0 Safari/537.36'
   );
 
-  const url = `https://na.finalfantasyxiv.com/lodestone/community/search/?q=${name}+${surname}`;
+  const url = `https://eu.finalfantasyxiv.com/lodestone/character/?q=${name}+${surname}&worldname=${dc_from_server[server.toLowerCase()]}&classjob=&race_tribe=&blog_lang=ja&blog_lang=en&blog_lang=de&blog_lang=fr&order=`
   await page.goto(url, { waitUntil: 'domcontentloaded' });
   await page.setViewport({ width: 1080, height: 1024 });
 
-  await page.waitForSelector('.frame__chara__name', { timeout: 15000 });
+  await page.waitForSelector('.entry__name', {timeout: 10000});
 
-  let previousHeight;
-  for (let i = 0; i < 10; i++) {
-    previousHeight = await page.evaluate('document.body.scrollHeight');
-    await page.evaluate('window.scrollTo(0, document.body.scrollHeight)');
-
-    const newHeight = await page.evaluate('document.body.scrollHeight');
-    if (newHeight === previousHeight) {
-      console.log('Finished scrolling');
-      break;
-    }
-  }
-
-  await page.screenshot({ path: `/usr/src/app/debug-${name}.png`, fullPage: true });
-
-  const results = await page.$$eval('.entry__link--line', (res, server) => {
+  const results = await page.$$eval('.entry__link', (res, server) => {
     return res.map(a => {
-      const serverElement = a.querySelector('div.frame__chara__box > .frame__chara__world');
-      if (serverElement && serverElement.textContent.toLowerCase().includes(server.toLowerCase())) {
+      const serverElement = a.querySelector('div.entry__box--world > p.entry__world');
+      if(serverElement && serverElement.textContent.toLowerCase().includes(server.toLowerCase())) {
         return a.href.split("/").at(-2);
       }
       return null;
-    }).filter(Boolean);
+    }).filter(Boolean)
   }, server);
 
   await browser.close();
   return results[0] || "";
+
 }
+
 async function getAllFcNames() {
 
     const browser = await puppeteer.launch({

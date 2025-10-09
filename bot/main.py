@@ -64,7 +64,6 @@ async def la_queefa(message):
 
         await message.reply(final_text)
 
-
 @bot.listen('on_message')
 async def on_message(message):
     if message.author == bot.user:
@@ -85,6 +84,9 @@ async def on_message(message):
         await message.reply(file=discord.File("./images/alexander2.png"))
         await message.reply(file=discord.File("./images/alexander3.png"))
         await message.reply("RAAAAAAAAAAAAAA")
+
+    if "ponker" or "roach" in message.content.lower():
+        await message.add_reaction("🪳")
 
     await la_queefa(message)
 

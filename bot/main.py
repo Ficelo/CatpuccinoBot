@@ -85,7 +85,7 @@ async def on_message(message):
         await message.reply(file=discord.File("./images/alexander3.png"))
         await message.reply("RAAAAAAAAAAAAAA")
 
-    if "perfect" or "roach" in message.content.lower():
+    if "ponker" or "roach" in message.content.lower():
         await message.add_reaction("🪳")
 
     await la_queefa(message)

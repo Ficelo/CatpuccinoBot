@@ -78,15 +78,19 @@ async def on_message(message):
         await message.reply(file=discord.File("./images/invisible.gif"))
 
     if "perfect" in message.content.lower():
-        await message.reply("DID SOMEONE SAY PERFECT ????")
-        await message.reply("TIME FOR THE GOOOOAAAAT")
-        await message.reply(file=discord.File("./images/alexander1.jpg"))
-        await message.reply(file=discord.File("./images/alexander2.png"))
-        await message.reply(file=discord.File("./images/alexander3.png"))
-        await message.reply("RAAAAAAAAAAAAAA")
+        chance = 10;
+        if random.randint(1, 100) <= chance:
+            await message.reply("DID SOMEONE SAY PERFECT ????")
+            await message.reply("TIME FOR THE GOOOOAAAAT")
+            await message.reply(file=discord.File("./images/alexander1.jpg"))
+            await message.reply(file=discord.File("./images/alexander2.png"))
+            await message.reply(file=discord.File("./images/alexander3.png"))
+            await message.reply("RAAAAAAAAAAAAAA")
 
-    if "ponker" or "roach" in message.content.lower():
-        await message.add_reaction("🪳")
+    if "ponker" in message.content.lower() or "roach" in message.content.lower():
+        chance = 10;
+        if random.randint(1, 100) <= chance:
+            await message.add_reaction("🪳")
 
     await la_queefa(message)
 

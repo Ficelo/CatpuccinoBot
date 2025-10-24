@@ -8,13 +8,21 @@ import os
 import time
 from datetime import datetime, timezone
 import random
-
+import json
 
 load_dotenv()
 
 descrption = "A banger bot to do some stuff in the Catputccino discord"
 
 api_url = os.getenv("API_URL", "http://localhost:3000")
+options_file = "/app/options.json"
+
+options = ""
+sleeper_agent_names = ["mudae", "perfect", "invisible", "ponker", "la queefa"]
+
+with open(options_file, "r") as f:
+    options = json.load(f)
+    f.close()
 
 intents = discord.Intents.default()
 intents.members = True
@@ -31,13 +39,11 @@ async def on_ready():
     if not update_server_time.is_running():
         update_server_time.start()
 
-
 @tasks.loop(seconds=60)
 async def update_server_time():
     server_time = datetime.now(timezone.utc).strftime("%H:%M")
     await bot.change_presence(activity=discord.CustomActivity(name=f"Server time : {server_time}"))
     print(f"Status changed to : Server time : {server_time}")
-
 
 async def la_queefa(message):
 
@@ -64,35 +70,94 @@ async def la_queefa(message):
 
         await message.reply(final_text)
 
+async def sleeper_agent(func, message, name=""):
+
+    if name not in options["disabled_sleeper_agents"]:
+        await func(message)
+
+async def mudae_sleeper_agent(message):
+    chance = 5;
+    if random.randint(1, 100) <= chance:
+        await message.reply(file=discord.File("./images/dog.png"))
+
+async def perfect_sleeper_agent(message):
+    chance = 10;
+    if random.randint(1, 100) <= chance:
+        await message.reply("DID SOMEONE SAY PERFECT ????")
+        await message.reply("TIME FOR THE GOOOOAAAAT")
+        await message.reply(file=discord.File("./images/alexander1.jpg"))
+        await message.reply(file=discord.File("./images/alexander2.png"))
+        await message.reply(file=discord.File("./images/alexander3.png"))
+        await message.reply("RAAAAAAAAAAAAAA")
+
+async def roach_sleeper_agent(message):
+    chance = 10;
+    if random.randint(1, 100) <= chance:
+        await message.add_reaction("🪳")
+
 @bot.listen('on_message')
 async def on_message(message):
-    if message.author == bot.user:
+    if message.author == bot.user or message.content[0] == "?":
         return
     
     if message.content == "$wa":
-        chance = 5;
-        if random.randint(1, 100) <= chance:
-            await message.reply(file=discord.File("./images/dog.png"))
+        await sleeper_agent(mudae_sleeper_agent, message, "mudae")
 
     if "invisible" in message.content.lower():
         await message.reply(file=discord.File("./images/invisible.gif"))
 
     if "perfect" in message.content.lower():
-        chance = 10;
-        if random.randint(1, 100) <= chance:
-            await message.reply("DID SOMEONE SAY PERFECT ????")
-            await message.reply("TIME FOR THE GOOOOAAAAT")
-            await message.reply(file=discord.File("./images/alexander1.jpg"))
-            await message.reply(file=discord.File("./images/alexander2.png"))
-            await message.reply(file=discord.File("./images/alexander3.png"))
-            await message.reply("RAAAAAAAAAAAAAA")
+        await sleeper_agent(perfect_sleeper_agent, message, "perfect")
 
     if "ponker" in message.content.lower() or "roach" in message.content.lower():
-        chance = 10;
-        if random.randint(1, 100) <= chance:
-            await message.add_reaction("🪳")
+       await sleeper_agent(roach_sleeper_agent, message, "roach")
 
-    await la_queefa(message)
+    await sleeper_agent(la_queefa, message, "la queefa")
+
+@bot.command()
+async def disable(ctx, agent):
+
+    if "meowficer" not in [x.name.lower() for x in ctx.author.roles]:
+        print([x.name.lower() for x in ctx.author.roles])
+        print("not a meowficer")
+        return
+
+    if agent in sleeper_agent_names and agent not in options["disabled_sleeper_agents"]:
+        
+        disabled = options["disabled_sleeper_agents"]
+        disabled.append(agent)
+
+        options["disabled_sleeper_agents"] = disabled
+
+        with open(options_file, "w") as f:
+            json.dump(options, f)
+            f.close()
+
+    else:
+        await ctx.send("Not a valid sleeper agent name or already disabled")
+
+@bot.command()
+async def enable(ctx, agent):
+
+    if "meowficer" not in [x.name.lower() for x in ctx.author.roles]:
+        print([x.name.lower() for x in ctx.author.roles])
+        print("not a meowficer")
+        return
+
+    if agent in sleeper_agent_names and agent in options["disabled_sleeper_agents"]:
+        
+        disabled = options["disabled_sleeper_agents"]
+        disabled.remove(agent)
+
+        options["disabled_sleeper_agents"] = disabled
+
+        with open(options_file, "w") as f:
+            json.dump(options, f)
+            f.close()
+
+    else:
+        await ctx.send("Not a valid sleeper agent name or already enabled")
+
 
 @bot.command()
 async def compatibility(ctx, thing1, thing2, mode=""):
@@ -132,9 +197,6 @@ async def compatibility(ctx, thing1, thing2, mode=""):
     img_bytes = BytesIO(response.content)
     img_bytes.seek(0)
     await ctx.send(file=discord.File(img_bytes, filename="compatibility.png"))
-
-    
-
 
 @bot.command()
 async def hat(ctx, name, surname, server, hat="propeller"):
@@ -214,8 +276,7 @@ async def patchnotes(ctx, patch):
     embed.add_field(name="Sage", value="Sages will now be executed if they don't have kardia on a party member", inline=False)
 
     await ctx.send(embed=embed)
-
-    
+ 
 @bot.command()
 async def baguettereact(ctx):
     
@@ -223,7 +284,5 @@ async def baguettereact(ctx):
 
     for _ in range(0, 10):
         await message.channel.send("🥖", reference=message)
-
-
 
 bot.run(os.getenv("API_KEY"))

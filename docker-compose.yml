@@ -15,8 +15,6 @@ services:
     environment:
       - NODE_ENV=production
     
-
-
   python-bot:
     build: ./bot
     container_name: python-bot
@@ -27,3 +25,5 @@ services:
       - ./bot/.env
     environment:
       API_URL: "http://node-api:3000"
+    volumes:
+      - ./bot/options.json:/app/options.json

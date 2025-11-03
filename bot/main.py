@@ -158,7 +158,6 @@ async def enable(ctx, agent):
     else:
         await ctx.send("Not a valid sleeper agent name or already enabled")
 
-
 @bot.command()
 async def compatibility(ctx, thing1, thing2, mode=""):
 
@@ -227,6 +226,13 @@ async def hat(ctx, name, surname, server, hat="propeller"):
     img_bytes = BytesIO(response.content)
     img_bytes.seek(0)
     await ctx.send(file=discord.File(img_bytes, filename="hat.png"))
+
+@bot.command()
+async def inponkers(ctx, size):
+    ponker_height = 86.9
+    converted = round((float(size) / ponker_height), 2);
+    await ctx.send(f"{size}cm is {converted} Ponkers")
+    
 
 @bot.command()
 async def patchnotes(ctx, patch):

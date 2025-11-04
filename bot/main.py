@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 import random
 import json
 import aiohttp
+import asyncio
 
 load_dotenv()
 
@@ -19,7 +20,7 @@ api_url = os.getenv("API_URL", "http://localhost:3000")
 options_file = "/app/options.json"
 
 options = ""
-sleeper_agent_names = ["mudae", "perfect", "invisible", "ponker", "la queefa", "dementia"]
+sleeper_agent_names = ["mudae", "perfect", "invisible", "ponker", "la queefa", "dementia", "foxy"]
 
 with open(options_file, "r") as f:
     options = json.load(f)
@@ -101,6 +102,13 @@ async def dementia_sleeper_agent(message):
     if random.randint(1, 100) <= chance:
         await message.reply(file=discord.File("./images/dementia.gif"))
 
+async def foxy_sleeper_agent(message):
+    chance = 1
+    if random.randint(1, 100) <= chance:
+        new_message = await message.reply(file=discord.File("./images/foxy-jumpscare.gif"))
+        await asyncio.sleep(1)
+        await new_message.delete()
+
 @bot.listen('on_message')
 async def on_message(message):
     if message.author == bot.user or message.content[0] == "?":
@@ -122,6 +130,8 @@ async def on_message(message):
         await sleeper_agent(dementia_sleeper_agent, message, "dementia")
 
     await sleeper_agent(la_queefa, message, "la queefa")
+
+    await sleeper_agent(foxy_sleeper_agent, message, "foxy");
 
 @bot.command()
 async def disable(ctx, agent):

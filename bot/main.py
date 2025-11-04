@@ -9,6 +9,7 @@ import time
 from datetime import datetime, timezone
 import random
 import json
+import aiohttp
 
 load_dotenv()
 
@@ -163,38 +164,37 @@ async def compatibility(ctx, thing1, thing2, mode=""):
 
     # -o for other on the second one
     
-    thing1List = thing1.split(" ")
+    async with ctx.typing():
+        thing1List = thing1.split(" ")
 
-    if mode == "":
+        if mode == "":
 
-        thing2List = thing2.split(" ")
-        data = {
-            "thing1" : {"name" : thing1List[0], "surname" : thing1List[1], "server": thing1List[2]},
-            "thing2" : {"name" : thing2List[0], "surname" : thing2List[1], "server": thing2List[2]},
-            "mode" : mode
-        }
-    else :
-        data = {
-            "thing1" : {"name" : thing1List[0], "surname" : thing1List[1], "server": thing1List[2]},
-            "thing2" : thing2,
-            "mode" : mode
-        }
+            thing2List = thing2.split(" ")
+            data = {
+                "thing1" : {"name" : thing1List[0], "surname" : thing1List[1], "server": thing1List[2]},
+                "thing2" : {"name" : thing2List[0], "surname" : thing2List[1], "server": thing2List[2]},
+                "mode" : mode
+            }
+        else :
+            data = {
+                "thing1" : {"name" : thing1List[0], "surname" : thing1List[1], "server": thing1List[2]},
+                "thing2" : thing2,
+                "mode" : mode
+            }
 
-    try:
-        response = requests.post(f"{api_url}/compatibility", json=data)
-    except requests.exceptions.RequestException as err:
-        await ctx.send(f"Error : {err}")
-
-    if response.status_code != 200:
-        text = response.text if response.text else f"Status {response.status_code}"
-        MAX = 3000
-        if len(text) > MAX:
-            text = text[:MAX] + "\n\n...(truncated)"
-        await ctx.send(f"Server error: {text}")
-        return
-    
-    img_bytes = BytesIO(response.content)
-    img_bytes.seek(0)
+        async with aiohttp.ClientSession() as session:
+            try:
+                async with session.post(f"{api_url}/compatibility", json=data) as response:
+                    if response.status != 200:
+                        text = await response.text()
+                        text = text[:3000] + "\n\n...(truncated)" if len(text) > 3000 else text
+                        await ctx.send(f"Server error: {text}")
+                        return
+                    img_bytes = BytesIO(await response.read())
+            except aiohttp.ClientError as err:
+                await ctx.send(f"Error : {err}")
+           
+        img_bytes.seek(0)
     await ctx.send(file=discord.File(img_bytes, filename="compatibility.png"))
 
 @bot.command()
@@ -208,22 +208,20 @@ async def hat(ctx, name, surname, server, hat="propeller"):
         "hat" : hat
     }
 
-    try :
-        response = requests.post(f"{api_url}/hat", json=data)
-    except requests.exceptions.RequestException as err:
-        await ctx.send(f"Error : {err}")
-        return
+    async with ctx.typing():
+        try :
+            async with aiohttp.ClientSession() as session:
+                async with session.post(f"{api_url}/hat", json=data) as response:
+                    if response.status != 200:
+                        text = await response.text()
+                        text = text[:3000] + "\n\n...(truncated)" if len(text) > 3000 else text
+                        await ctx.send(f"Server error: {text}")
+                        return
+                    img_bytes = BytesIO(await response.read())
+        except aiohttp.ClientError as err:
+            await ctx.send(f"Error : {err}")
+            return
 
-
-    if response.status_code != 200:
-        text = response.text if response.text else f"Status {response.status_code}"
-        MAX = 3000
-        if len(text) > MAX:
-            text = text[:MAX] + "\n\n...(truncated)"
-        await ctx.send(f"Server error: {text}")
-        return
-    
-    img_bytes = BytesIO(response.content)
     img_bytes.seek(0)
     await ctx.send(file=discord.File(img_bytes, filename="hat.png"))
 

@@ -20,7 +20,7 @@ api_url = os.getenv("API_URL", "http://localhost:3000")
 options_file = "/app/options.json"
 
 options = ""
-sleeper_agent_names = ["mudae", "perfect", "invisible", "ponker", "la queefa", "dementia", "foxy"]
+sleeper_agent_names = ["mudae", "perfect", "invisible", "ponker", "la queefa", "dementia", "foxy", "hypnosis"]
 
 with open(options_file, "r") as f:
     options = json.load(f)
@@ -109,6 +109,13 @@ async def foxy_sleeper_agent(message):
         await asyncio.sleep(1)
         await new_message.delete()
 
+async def hypnosis_sleeper_agent(message):
+    chance = 1
+    if random.randint(1, 100) <= chance:
+        new_message = await message.reply(file=discord.File("./images/hypnosis.gif"))
+        await asyncio.sleep(8)
+        await new_message.delete()
+
 @bot.listen('on_message')
 async def on_message(message):
     if message.author == bot.user or message.content[0] == "?":
@@ -132,6 +139,8 @@ async def on_message(message):
     await sleeper_agent(la_queefa, message, "la queefa")
 
     await sleeper_agent(foxy_sleeper_agent, message, "foxy");
+
+    await sleeper_agent(hypnosis_sleeper_agent, message, "hypnosis")
 
 @bot.command()
 async def disable(ctx, agent):

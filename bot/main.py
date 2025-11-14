@@ -124,7 +124,7 @@ async def on_message(message):
     if message.content == "$wa":
         await sleeper_agent(mudae_sleeper_agent, message, "mudae")
 
-    if "invisible" in message.content.lower():
+    if "invisible" in message.content.lower() or "invincible" in message.content.lower():
         await message.reply(file=discord.File("./images/invisible.gif"))
 
     if "perfect" in message.content.lower():

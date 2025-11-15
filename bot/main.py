@@ -20,7 +20,7 @@ api_url = os.getenv("API_URL", "http://localhost:3000")
 options_file = "/app/options.json"
 
 options = ""
-sleeper_agent_names = ["mudae", "perfect", "invisible", "ponker", "la queefa", "dementia", "foxy", "hypnosis"]
+sleeper_agent_names = ["mudae", "perfect", "invisible", "ponker", "la queefa", "dementia", "foxy", "hypnosis", "crown"]
 
 with open(options_file, "r") as f:
     options = json.load(f)
@@ -102,6 +102,11 @@ async def dementia_sleeper_agent(message):
     if random.randint(1, 100) <= chance:
         await message.reply(file=discord.File("./images/dementia.gif"))
 
+async def crown_sleeper_agent(message):
+    chance = 100
+    if random.randint(1, 100) <= chance:
+        await message.reply(file=discord.File("./images/crown.gif"))
+
 async def foxy_sleeper_agent(message):
     chance = 1
     if random.randint(1, 100) <= chance:
@@ -135,6 +140,9 @@ async def on_message(message):
     
     if message.content[0:7] == "!me new":
         await sleeper_agent(dementia_sleeper_agent, message, "dementia")
+
+    if "crown" in message.content.lower():
+        await sleeper_agent(crown_sleeper_agent, message, "crown")
 
     await sleeper_agent(la_queefa, message, "la queefa")
 

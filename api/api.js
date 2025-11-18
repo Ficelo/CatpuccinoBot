@@ -1,4 +1,4 @@
-import {propellerize, nerdify, duncify, dimmadomify, makeCompatibility2characters, makeCompatibilityOther} from "./imageFusion.js";
+import {propellerize, nerdify, duncify, dimmadomify, makeCompatibility2characters, makeCompatibilityOther, makeProgress} from "./imageFusion.js";
 import {getCodeFromName} from "./main.js";
 import http from "http";
 import fs from "fs";
@@ -49,6 +49,20 @@ async function getCompatibility(body, res) {
 
 }
 
+async function getProgress(body, res) {
+
+    const resultPath = await makeProgress(body.fight, body.progress);
+
+    try {
+        const file = await fs.promises.readFile(path.resolve(resultPath));
+        res.writeHead(200, {"Content-Type" : "image/png"});
+        res.end(file);
+    } catch (err) {
+        res.writeHead(404);
+        res.end("An error has occured : ", err.message)
+    }
+
+}
 
 http.createServer((req, res) => {
 
@@ -78,6 +92,18 @@ http.createServer((req, res) => {
             }
         
         });
+
+    } else if (req.url == "/progress") {
+
+        req.on("data", chunk => {
+            body.push(chunk);
+        }).on("end", async () => {
+            body = Buffer.concat(body).toString();
+            body = JSON.parse(body);
+            console.log("body : ", body);
+            await getProgress(body, res);
+        });
+
 
     } else if (req.url == "/compatibility") {
 

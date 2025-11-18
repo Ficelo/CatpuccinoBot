@@ -325,6 +325,96 @@ export async function makeCompatibility(image1Path, image2Path) {
 
 }
 
+export async function makeProgress(fight, progress) {
+    const resultPath = "/progress.png"
+
+    const titleSVG = Buffer.from(
+        `<svg width="500" height="100" viewBox="0 0 500 100" >
+            <text
+                x="10"
+                y="50"
+                font-size="24"
+                font-family="Arial"
+                fill="white"
+                dominant-baseline="middle"
+            >
+                ${fight}
+            </text>
+        </svg>`
+    );
+
+    const percentSVG = Buffer.from(
+        `<svg width="380" height="32">
+            <text x="50%" y="50%" font-family="Arial" font-size="28" fill="white" text-anchor="middle" dominant-baseline="middle">
+                ${progress}%
+            </text>
+        </svg>`
+    );
+
+    const percentBarSVG = Buffer.from(
+        `<svg width="${Math.round(progress * 4)}" height="100">
+            <rect width="100%" height="100%" fill="#50C878" />
+        </svg>`
+    );
+
+    const percentBarBackgroundSVG = Buffer.from(
+        `<svg width="400" height="100">
+            <rect width="100%" height="100%" fill="#6D8DD6" />
+        </svg>`
+    );
+
+    const {data : frame} = await sharp("./bases/progress-frame.svg")
+        .toFormat("png")
+        .resize({
+            fit : sharp.fit.fill,
+            width : 500,
+            height : 100
+        })
+        .toBuffer({resolveWithObject : true});
+
+    const {data : ultimaBuffer} = await sharp("./hats/ultima.jpg")
+        .toFormat("png")
+        .resize({
+            fit : sharp.fit.fill,
+            width : 80,
+            height : 80
+        })
+        .toBuffer({resolveWithObject : true});
+    
+    await sharp("./bases/base100x500.png")
+        .toFormat("png")
+        .composite([
+            {
+                input : ultimaBuffer,
+                top: 10,
+                left: 10
+            },
+            {
+                input : percentBarSVG,
+                top : 50,
+                left: 102
+            },
+            {
+                input: percentSVG,
+                top: 50,
+                left: 112
+            },
+            {
+                input: frame,
+                top: 0,
+                left: 0
+            },
+            {
+                input: titleSVG,
+                top: -20,
+                left: 92
+            }
+        ])
+        .toFile("." + resultPath)
+
+    return "." + resultPath;
+
+}
 
 export async function propellerize(character = { name: "ponker", code : 38173609}) {
     await getImageFromCode(character);

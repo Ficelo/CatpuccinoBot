@@ -1,1 +1,17 @@
-{"disabled_sleeper_agents": []}
+{
+    "disabled_sleeper_agents": [],
+    "registered_users": [
+        {
+            "discord_id": "",
+            "ffxiv_id": "",
+            "server": "",
+            "ffxiv_name": ""
+        }
+    ],
+    "statics": [
+        {
+            "name" : "Catpuccino Meowfare",
+            "id" : "135583"
+        }
+    ]
+    }

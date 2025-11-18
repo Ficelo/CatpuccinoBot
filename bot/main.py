@@ -11,6 +11,7 @@ import random
 import json
 import aiohttp
 import asyncio
+from fflogs_functions import *
 
 load_dotenv()
 
@@ -149,6 +150,28 @@ async def on_message(message):
     await sleeper_agent(foxy_sleeper_agent, message, "foxy");
 
     await sleeper_agent(hypnosis_sleeper_agent, message, "hypnosis")
+
+@bot.command()
+async def progress(ctx, static=""):
+
+    async with ctx.typing():
+        
+        try :
+            data = await asyncio.to_thread(getLastFightHighestPercent)
+            async with aiohttp.ClientSession() as session:
+                async with session.post(f"{api_url}/progress", json=data) as response:
+                    if response.status != 200:
+                        text = await response.text()
+                        text = text[:3000] + "\n\n...(truncated)" if len(text) > 3000 else text
+                        await ctx.send(f"Server error: {text}")
+                        return
+                    img_bytes = BytesIO(await response.read())
+        except aiohttp.ClientError as err:
+            await ctx.send(f"Error : {err}")
+            return
+
+    img_bytes.seek(0)
+    await ctx.send(file=discord.File(img_bytes, filename="hat.png"))
 
 @bot.command()
 async def disable(ctx, agent):

@@ -21,7 +21,7 @@ api_url = os.getenv("API_URL", "http://localhost:3000")
 options_file = "/app/options.json"
 
 options = ""
-sleeper_agent_names = ["mudae", "perfect", "invisible", "ponker", "la queefa", "dementia", "foxy", "hypnosis", "crown"]
+sleeper_agent_names = ["mudae", "perfect", "invisible", "ponker", "la queefa", "dementia", "foxy", "hypnosis", "crown", "starwalker"]
 
 with open(options_file, "r") as f:
     options = json.load(f)
@@ -122,10 +122,20 @@ async def hypnosis_sleeper_agent(message):
         await asyncio.sleep(8)
         await new_message.delete()
 
+async def starwalker_sleeper_agent(message):
+    chance = 100
+    print("in star walker")
+    if random.randint(1, 100) <= chance:
+        await message.channel.send(file=discord.File("./images/Starwalker.png"))
+        await message.channel.send(f"This {message.channel.name} channel is pissing me off")
+        await message.channel.send("I am the original                         Starwalker")
+
 @bot.listen('on_message')
 async def on_message(message):
     if message.author == bot.user or message.content[0] == "?":
         return
+
+    print(message.content)
     
     if message.content == "$wa":
         await sleeper_agent(mudae_sleeper_agent, message, "mudae")
@@ -150,6 +160,8 @@ async def on_message(message):
     await sleeper_agent(foxy_sleeper_agent, message, "foxy");
 
     await sleeper_agent(hypnosis_sleeper_agent, message, "hypnosis")
+
+    await sleeper_agent(starwalker_sleeper_agent, message, "starwalker")
 
 @bot.command()
 async def progress(ctx, static=""):

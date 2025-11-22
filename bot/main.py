@@ -123,7 +123,7 @@ async def hypnosis_sleeper_agent(message):
         await new_message.delete()
 
 async def starwalker_sleeper_agent(message):
-    chance = 100
+    chance = 1
     print("in star walker")
     if random.randint(1, 100) <= chance:
         await message.channel.send(file=discord.File("./images/Starwalker.png"))

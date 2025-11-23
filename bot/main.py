@@ -109,33 +109,30 @@ async def crown_sleeper_agent(message):
         await message.reply(file=discord.File("./images/crown.gif"))
 
 async def foxy_sleeper_agent(message):
-    chance = 1
-    if random.randint(1, 100) <= chance:
-        new_message = await message.reply(file=discord.File("./images/foxy-jumpscare.gif"))
-        await asyncio.sleep(1)
-        await new_message.delete()
+    #chance = 1
+    #if random.randint(1, 100) <= chance:
+    new_message = await message.reply(file=discord.File("./images/foxy-jumpscare.gif"))
+    await asyncio.sleep(1)
+    await new_message.delete()
 
 async def hypnosis_sleeper_agent(message):
-    chance = 1
-    if random.randint(1, 100) <= chance:
-        new_message = await message.reply(file=discord.File("./images/hypnosis.gif"))
-        await asyncio.sleep(8)
-        await new_message.delete()
+    #chance = 1
+    #if random.randint(1, 100) <= chance:
+    new_message = await message.reply(file=discord.File("./images/hypnosis.gif"))
+    await asyncio.sleep(8)
+    await new_message.delete()
 
 async def starwalker_sleeper_agent(message):
-    chance = 1
-    print("in star walker")
-    if random.randint(1, 100) <= chance:
-        await message.channel.send(file=discord.File("./images/Starwalker.png"))
-        await message.channel.send(f"This {message.channel.name} channel is pissing me off")
-        await message.channel.send("I am the original                         Starwalker")
+    #chance = 1
+    #if random.randint(1, 100) <= chance:
+    await message.channel.send(file=discord.File("./images/Starwalker.png"))
+    await message.channel.send(f"This {message.channel.name} channel is pissing me off")
+    await message.channel.send("I am the original                         Starwalker")
 
 @bot.listen('on_message')
 async def on_message(message):
     if message.author == bot.user or message.content[0] == "?":
         return
-
-    print(message.content)
     
     if message.content == "$wa":
         await sleeper_agent(mudae_sleeper_agent, message, "mudae")
@@ -157,11 +154,15 @@ async def on_message(message):
 
     await sleeper_agent(la_queefa, message, "la queefa")
 
-    await sleeper_agent(foxy_sleeper_agent, message, "foxy");
-
-    await sleeper_agent(hypnosis_sleeper_agent, message, "hypnosis")
-
-    await sleeper_agent(starwalker_sleeper_agent, message, "starwalker")
+    chance = 1
+    if random.randint(1, 100) <= chance:
+        random_event = random.randint(1, 3)
+        if random_event == 1:
+            await sleeper_agent(foxy_sleeper_agent, message, "foxy");
+        elif random_event == 2:
+            await sleeper_agent(hypnosis_sleeper_agent, message, "hypnosis")
+        elif random_event == 3: 
+            await sleeper_agent(starwalker_sleeper_agent, message, "starwalker")
 
 @bot.command()
 async def progress(ctx, static=""):

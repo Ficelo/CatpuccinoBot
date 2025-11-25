@@ -118,7 +118,7 @@ async def foxy_sleeper_agent(message):
 async def hypnosis_sleeper_agent(message):
     #chance = 1
     #if random.randint(1, 100) <= chance:
-    new_message = await message.reply(file=discord.File("./images/hypnosis.gif"))
+    new_message = await message.reply(file=discord.File("./images/hypnosis 2.gif"))
     await asyncio.sleep(8)
     await new_message.delete()
 

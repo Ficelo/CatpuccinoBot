@@ -12,6 +12,7 @@ import json
 import aiohttp
 import asyncio
 from fflogs_functions import *
+from sleeper_agents import *
 
 load_dotenv()
 
@@ -48,121 +49,15 @@ async def update_server_time():
     await bot.change_presence(activity=discord.CustomActivity(name=f"Server time : {server_time}"))
     print(f"Status changed to : Server time : {server_time}")
 
-async def la_queefa(message):
-
-    # Spaghetti but idc
-
-    laqueefa = "laqueefa"
-    text = list(message.content.lower())
-    current = 0
-    temp_queef = ""
-    letter_indexes = []
-
-    for i in range(0, len(text)):
-        if current < len(laqueefa) and  text[i] == laqueefa[current]:
-            letter_indexes.append(i)
-            temp_queef += laqueefa[current]
-            current += 1
-
-    if temp_queef == laqueefa:
-        for i in range(0, len(text)):
-            if i not in letter_indexes:
-                text[i] = " "
-    
-        final_text = "".join(str(l) for l in text)
-
-        await message.reply(final_text)
-
-async def sleeper_agent(func, message, name=""):
-
-    if name not in options["disabled_sleeper_agents"]:
-        await func(message)
-
-async def mudae_sleeper_agent(message):
-    chance = 5;
-    if random.randint(1, 100) <= chance:
-        await message.reply(file=discord.File("./images/dog.png"))
-
-async def perfect_sleeper_agent(message):
-    chance = 10;
-    if random.randint(1, 100) <= chance:
-        await message.reply("DID SOMEONE SAY PERFECT ????")
-        await message.reply("TIME FOR THE GOOOOAAAAT")
-        await message.reply(file=discord.File("./images/alexander1.jpg"))
-        await message.reply(file=discord.File("./images/alexander2.png"))
-        await message.reply(file=discord.File("./images/alexander3.png"))
-        await message.reply("RAAAAAAAAAAAAAA")
-
-async def roach_sleeper_agent(message):
-    chance = 10;
-    if random.randint(1, 100) <= chance:
-        await message.add_reaction("🪳")
-
-async def dementia_sleeper_agent(message):
-    chance = 10
-    if random.randint(1, 100) <= chance:
-        await message.reply(file=discord.File("./images/dementia.gif"))
-
-async def crown_sleeper_agent(message):
-    chance = 100
-    if random.randint(1, 100) <= chance:
-        await message.reply(file=discord.File("./images/crown.gif"))
-
-async def foxy_sleeper_agent(message):
-    #chance = 1
-    #if random.randint(1, 100) <= chance:
-    new_message = await message.reply(file=discord.File("./images/foxy-jumpscare.gif"))
-    await asyncio.sleep(1)
-    await new_message.delete()
-
-async def hypnosis_sleeper_agent(message):
-    #chance = 1
-    #if random.randint(1, 100) <= chance:
-    new_message = await message.reply(file=discord.File("./images/hypnosis 2.gif"))
-    await asyncio.sleep(8)
-    await new_message.delete()
-
-async def starwalker_sleeper_agent(message):
-    #chance = 1
-    #if random.randint(1, 100) <= chance:
-    await message.channel.send(file=discord.File("./images/Starwalker.png"))
-    await message.channel.send(f"This {message.channel.name} channel is pissing me off")
-    await message.channel.send("I am the original                         Starwalker")
-
 @bot.listen('on_message')
 async def on_message(message):
     if message.author == bot.user or message.content[0] == "?":
         return
-    
-    if message.content == "$wa":
-        await sleeper_agent(mudae_sleeper_agent, message, "mudae")
 
-    if "invisible" in message.content.lower() or "invincible" in message.content.lower():
-        await message.reply(file=discord.File("./images/invisible.gif"))
+    SleeperAgent.register_message()
+    SleeperAgent.set_message(message)
+    await SleeperAgent.run_all()
 
-    if "perfect" in message.content.lower():
-        await sleeper_agent(perfect_sleeper_agent, message, "perfect")
-
-    if "ponker" in message.content.lower() or "roach" in message.content.lower():
-       await sleeper_agent(roach_sleeper_agent, message, "roach")
-    
-    if message.content[0:7] == "!me new":
-        await sleeper_agent(dementia_sleeper_agent, message, "dementia")
-
-    if "crown" in message.content.lower():
-        await sleeper_agent(crown_sleeper_agent, message, "crown")
-
-    await sleeper_agent(la_queefa, message, "la queefa")
-
-    chance = 1
-    if random.randint(1, 100) <= chance:
-        random_event = random.randint(1, 3)
-        if random_event == 1:
-            await sleeper_agent(foxy_sleeper_agent, message, "foxy");
-        elif random_event == 2:
-            await sleeper_agent(hypnosis_sleeper_agent, message, "hypnosis")
-        elif random_event == 3: 
-            await sleeper_agent(starwalker_sleeper_agent, message, "starwalker")
 
 @bot.command()
 async def progress(ctx, static=""):

@@ -1,5 +1,7 @@
 {
-    "disabled_sleeper_agents": [],
+    "disabled_sleeper_agents": [
+        ""
+    ],
     "registered_users": [
         {
             "discord_id": "",
@@ -10,8 +12,8 @@
     ],
     "statics": [
         {
-            "name" : "Catpuccino Meowfare",
-            "id" : "135583"
+            "name": "Catpuccino Meowfare",
+            "id": "135583"
         }
     ]
-    }
+}

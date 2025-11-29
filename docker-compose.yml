@@ -19,6 +19,8 @@ services:
     build: ./bot
     container_name: python-bot
     restart: unless-stopped
+    ports:
+      - "8008:8008"
     depends_on:
       - node-api
     env_file:

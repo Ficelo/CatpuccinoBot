@@ -1,46 +1,44 @@
 import discord
 import random
 import asyncio
-import time
+import json
+
+options_file = "/app/options.json"
 
 class SleeperAgent:
     _instances = []
     message = None
-    message_timestamps = []
 
-    def __init__(self, name, chance=0, cooldown=5):
+    def __init__(self, name, proc_chance, cooldown_inc=50):
         self.name = name
-        self.chance = chance
-        self.cooldown = cooldown
-        self.last_trigger = 0
+        self.proc_chance = proc_chance
+        self.cooldown = 0
+        self.cooldown_inc = cooldown_inc
         SleeperAgent._instances.append(self)
 
-    @staticmethod
-    def register_message():
-        now = time.time()
-        SleeperAgent.message_timestamps.append(now)
-        SleeperAgent.message_timestamps = [
-            t for t in SleeperAgent.message_timestamps if now - t < 4
-        ]
+    def isEnabled(self):
+        try:
+            with open(options_file, "r") as f:
+                options = json.load(f)
+            return self.name not in options.get("disabled_sleeper_agents", [])
+        except FileNotFoundError:
+            return True
 
-    def get_dynamic_chance(self):
-        base = self.chance
-        msgs = len(SleeperAgent.message_timestamps)
-        if msgs > 6:
-            base = max(1, int(base * 0.25))
-        elif msgs > 3:
-            base = max(1, int(base * 0.5))
-        print("dynamic chance", base)
-        return base
+    def tick_cooldown(self):
+        self.cooldown = max(0, self.cooldown - 1)
+
+    def try_proc(self):
+        roll = random.randint(1, 100 + self.cooldown)
+        proc = roll <= self.proc_chance
+        print(f"{self.name} roll: {roll}, chance <= {self.proc_chance}, cooldown: {self.cooldown}, proc: {proc}")
+        return proc
 
     async def run(self):
         if self.message is None:
             return
-        if time.time() - self.last_trigger < self.cooldown:
+        if not self.isEnabled():
             return
-        if random.randint(1, 100) <= self.get_dynamic_chance():
-            self.last_trigger = time.time()
-            await self.action(self.message)
+        await self.action(self.message)
 
     async def action(self, message):
         pass
@@ -51,108 +49,121 @@ class SleeperAgent:
 
     @classmethod
     async def run_all(cls):
-        for instance in cls._instances:
-            await instance.run()
+        for agent in cls._instances:
+            agent.tick_cooldown()
+            await agent.run()
 
 
 class MudaeAgent(SleeperAgent):
     async def action(self, message):
-        if "$wa" in message.content.lower():
-            await message.reply(file=discord.File("./images/dog.png"))
+        if self.try_proc():
+            if "$wa" in message.content.lower() and self.try_proc():
+                await message.reply(file=discord.File("./images/dog.png"))
+                self.cooldown += self.cooldown_inc
 
 
 class PerfectAgent(SleeperAgent):
     async def action(self, message):
-        if "perfect" in message.content.lower():
+        if "perfect" in message.content.lower() and self.try_proc():
             await message.reply("DID SOMEONE SAY PERFECT ????")
             await message.reply("TIME FOR THE GOOOOAAAAT")
             await message.reply(file=discord.File("./images/alexander1.jpg"))
             await message.reply(file=discord.File("./images/alexander2.png"))
             await message.reply(file=discord.File("./images/alexander3.png"))
             await message.reply("RAAAAAAAAAAAAAA")
+            self.cooldown += self.cooldown_inc
 
 
 class RoachAgent(SleeperAgent):
     async def action(self, message):
-        if "roach" in message.content.lower() or "ponker" in message.content.lower():
-         await message.add_reaction("🪳")
+        if ("roach" in message.content.lower() or "ponker" in message.content.lower()) and self.try_proc():
+            await message.add_reaction("🪳")
+            self.cooldown += self.cooldown_inc
 
 
 class DementiaAgent(SleeperAgent):
     async def action(self, message):
-        if "!me new" in message.content.lower():
+        if "!me new" in message.content.lower() and self.try_proc():
             await message.reply(file=discord.File("./images/dementia.gif"))
+            self.cooldown += self.cooldown_inc
 
 
 class CrownAgent(SleeperAgent):
     async def action(self, message):
-        if "crown" in message.content:
+        if "crown" in message.content and self.try_proc():
             await message.reply(file=discord.File("./images/crown.gif"))
+            self.cooldown += self.cooldown_inc
 
 
 class FoxyAgent(SleeperAgent):
     async def action(self, message):
-        msg = await message.reply(file=discord.File("./images/foxy-jumpscare.gif"))
-        await asyncio.sleep(1)
-        await msg.delete()
+        if self.try_proc():
+            msg = await message.reply(file=discord.File("./images/foxy-jumpscare.gif"))
+            await asyncio.sleep(1)
+            await msg.delete()
+            self.cooldown += self.cooldown_inc
 
 
 class HypnosisAgent(SleeperAgent):
     async def action(self, message):
-        msg = await message.reply(file=discord.File("./images/hypnosis 2.gif"))
-        await asyncio.sleep(8)
-        await msg.delete()
+        if self.try_proc():
+            msg = await message.reply(file=discord.File("./images/hypnosis 2.gif"))
+            await asyncio.sleep(8)
+            await msg.delete()
+            self.cooldown += self.cooldown_inc
 
 
 class StarwalkerAgent(SleeperAgent):
     async def action(self, message):
-        await message.channel.send(file=discord.File("./images/Starwalker.png"))
-        await message.channel.send(f"This {message.channel.name} channel is pissing me off")
-        await message.channel.send("I am the original                         Starwalker")
+        if self.try_proc():
+            await message.channel.send(file=discord.File("./images/Starwalker.png"))
+            await message.channel.send(f"This {message.channel.name} is pissing me off")
+            await message.channel.send("I am the original Starwalker")
+            self.cooldown += self.cooldown_inc
+
 
 class InvisibleSleeperAgent(SleeperAgent):
     async def action(self, message):
-        if "invincible" in message.content.lower() or "invisible" in message.content.lower():
-            await message.reply(file=discord.File("./images/invisible.gif"))
+        if self.try_proc():
+            if ("invincible" in message.content.lower() or "invisible" in message.content.lower()) and self.try_proc():
+                await message.reply(file=discord.File("./images/invisible.gif"))
+                self.cooldown += self.cooldown_inc
 
 
 class LaQueefaAgent(SleeperAgent):
-    async def run(self):
-        if self.message is None:
-            return
-
-        text = list(self.message.content.lower())
-        target = "laqueefa"
-        idx = []
-        t = ""
-        c = 0
-
-        for i in range(len(text)):
-            if c < len(target) and text[i] == target[c]:
-                idx.append(i)
-                t += target[c]
-                c += 1
-
-        if t != target:
-            return
-
-        for i in range(len(text)):
-            if i not in idx:
-                text[i] = " "
-
-        await self.message.reply("".join(text))
-
     async def action(self, message):
-        pass
+        if self.try_proc() and self.message:
+            text = list(self.message.content.lower())
+            target = "laqueefa"
+            idx = []
+            t = ""
+            c = 0
+
+            for i in range(len(text)):
+                if c < len(target) and text[i] == target[c]:
+                    idx.append(i)
+                    t += target[c]
+                    c += 1
+
+            if t != target:
+                return
+
+            for i in range(len(text)):
+                if i not in idx:
+                    text[i] = " "
+
+            await self.message.reply("".join(text))
+            self.cooldown += self.coold
 
 
-mudae = MudaeAgent("mudae", 1)
-perfect = PerfectAgent("perfect", 10)
-roach = RoachAgent("roach", 10)
-dementia = DementiaAgent("dementia", 10)
-crown = CrownAgent("crown", 100)
-foxy = FoxyAgent("foxy", 1)
-hypnosis = HypnosisAgent("hypnosis", 1)
-starwalker = StarwalkerAgent("starwalker", 1)
-laqueefa = LaQueefaAgent("la queefa", 100)
-invisible = InvisibleSleeperAgent("invincible", 100)
+# initialize agents
+mudae = MudaeAgent("mudae", 1, 100)
+perfect = PerfectAgent("perfect", 10, 0)
+roach = RoachAgent("roach", 10, 0)
+dementia = DementiaAgent("dementia", 10, 0)
+crown = CrownAgent("crown", 100, 0)
+foxy = FoxyAgent("foxy", 1, 50)
+hypnosis = HypnosisAgent("hypnosis", 1, 50)
+starwalker = StarwalkerAgent("starwalker", 1, 100)
+laqueefa = LaQueefaAgent("la queefa", 100, 0)
+invisible = InvisibleSleeperAgent("invincible", 100, 0)

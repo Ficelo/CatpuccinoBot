@@ -13,6 +13,8 @@ import aiohttp
 import asyncio
 from fflogs_functions import *
 from sleeper_agents import *
+import threading
+import subprocess
 
 load_dotenv()
 
@@ -54,7 +56,6 @@ async def on_message(message):
     if message.author == bot.user or message.content[0] == "?":
         return
 
-    SleeperAgent.register_message()
     SleeperAgent.set_message(message)
     await SleeperAgent.run_all()
 
@@ -254,5 +255,10 @@ async def baguettereact(ctx):
 
     for _ in range(0, 10):
         await message.channel.send("🥖", reference=message)
+
+def run_server_py():
+    subprocess.run(["python", "server.py"], check=True)
+
+threading.Thread(target=run_server_py, daemon=True).start()
 
 bot.run(os.getenv("API_KEY"))

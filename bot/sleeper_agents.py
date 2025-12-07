@@ -157,6 +157,7 @@ class LaQueefaAgent(SleeperAgent):
 
 
 # initialize agents
+# name, proc change, cooldown
 mudae = MudaeAgent("mudae", 1, 100)
 perfect = PerfectAgent("perfect", 10, 0)
 roach = RoachAgent("roach", 10, 0)
@@ -164,6 +165,6 @@ dementia = DementiaAgent("dementia", 10, 0)
 crown = CrownAgent("crown", 100, 0)
 foxy = FoxyAgent("foxy", 1, 50)
 hypnosis = HypnosisAgent("hypnosis", 1, 50)
-starwalker = StarwalkerAgent("starwalker", 1, 100)
+starwalker = StarwalkerAgent("starwalker", 1, 500)
 laqueefa = LaQueefaAgent("la queefa", 100, 0)
 invisible = InvisibleSleeperAgent("invincible", 100, 0)

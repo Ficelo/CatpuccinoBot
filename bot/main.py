@@ -1,18 +1,16 @@
 import discord
 from discord.ext import commands, tasks
 import re
-import requests
 from io import BytesIO
 from dotenv import load_dotenv
 import os
 import time
 from datetime import datetime, timezone
-import random
 import json
 import aiohttp
 import asyncio
 from fflogs_functions import *
-from sleeper_agents import *
+from sleeper_agents.sleeper_agent_manager import agentManager
 import threading
 import subprocess
 
@@ -38,7 +36,6 @@ bot = commands.Bot(command_prefix="?", description=descrption, intents=intents)
 
 messageLinkRegex = re.compile(r"https://discord.com/channels/(\d+)/(\d+)/(\d+)")
 
-
 @bot.event
 async def on_ready():
     print(f'We have logged in as {bot.user}')
@@ -56,8 +53,8 @@ async def on_message(message):
     if message.author == bot.user or message.content[0] == "?":
         return
 
-    SleeperAgent.set_message(message)
-    await SleeperAgent.run_all()
+    agentManager.set_message(message)
+    await agentManager.run_agents()
 
 
 @bot.command()

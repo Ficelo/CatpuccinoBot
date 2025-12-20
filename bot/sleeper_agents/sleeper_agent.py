@@ -2,9 +2,12 @@ import discord
 import random
 import asyncio
 import json
+from log_manager import logManager
+from log import AgentLog
 
 
 def isAgentEnabled(name):
+    # Add real logic here
     options_file = "/app/options.json"
     return True
 
@@ -15,6 +18,8 @@ class SleeperAgent:
         self.proc_chance_small = proc_chance_small
         self.proc_chance_large = proc_chance_large
         self.debuff = debuff
+        self.log = None
+        logManager.add_agent(self.name)
 
     def isEnabled(self):
         return isAgentEnabled(self.name)
@@ -29,8 +34,7 @@ class SleeperAgent:
 
     def proc(self):
         roll = random.randint(1, self.proc_chance_large)
-        print(f"{self.name} : rolled {roll}, {self.proc_chance_small}/{self.proc_chance_large} chance")
-        # Add logging here
+        self.log = AgentLog(f"{self.name} : rolled {roll}, {self.proc_chance_small}/{self.proc_chance_large} chance")
         return roll <= self.proc_chance_small
 
     async def run(self):
@@ -42,13 +46,15 @@ class SleeperAgent:
             return
         
         procced = await self.action()
-        # Add logging here
         if procced:
             self.proc_chance_large += self.debuff
-            # Add logging here
+            self.log.set_proc(True)
+        
+        logManager.add_log(self.name, self.log)
+        self.log = None
 
         self.reduce_proc_chance_large()
 
-    # Override this to implement your agent
+    # Override this to implement an agent
     def action(self):
         return True

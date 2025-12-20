@@ -2,7 +2,7 @@ from ..sleeper_agent import *
 
 class AgentPerfect(SleeperAgent):
     async def action(self):
-        if "perfect" in self.message.content.lower() and self.proc():
+        if self.proc() and "perfect" in self.message.content.lower():
             await self.message.reply("DID SOMEONE SAY PERFECT ????")
             await self.message.reply("TIME FOR THE GOOOOAAAAT")
             await self.message.reply(file=discord.File("/app/images/alexander1.jpg"))

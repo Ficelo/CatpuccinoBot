@@ -1,29 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Catpuccino bot control console</title>
 </head>
+
 <body>
-    
+
+    <style>
+        .logs {
+            background-color: gainsboro;
+            max-height: 150px;
+            overflow: scroll;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+
+        .agent-logs {
+            margin-left: 10px
+        }
+
+        html, body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+    </style>
+
     <h1>Catpuccino bot control console</h1>
 
     <h3>Status</h3>
-    
+
     <br>
 
-    <h4>Enabled sleeper agents</h4>
+    <h3>Sleeper agents</h3>
     <div>
+        <div class="agent-logs">
 
+            <h4>SECRET</h4>
+            <div id="crown-logs" class="logs"></div>
+
+            <h4>Dementia</h4>
+            <div id="dementia-logs" class="logs"></div>
+
+            <h4>Foxy</h4>
+            <div id="foxy-logs" class="logs"></div>
+
+            <h4>Hypnosis</h4>
+            <div id="hypnosis-logs" class="logs"></div>
+
+            <h4>Invisible</h4>
+            <div id="invisible-logs" class="logs"></div>
+
+            <h4>La queefa</h4>
+            <div id="laqueefa-logs" class="logs"></div>
+
+            <h4>Mudae</h4>
+            <div id="mudae-logs" class="logs"></div>
+
+            <h4>Perfect</h4>
+            <div id="perfect-logs" class="logs"></div>
+
+            <h4>Roach</h4>
+            <div id="roach-logs" class="logs"></div>
+
+            <h4>Starwalker</h4>
+            <div id="starwalker-logs" class="logs"></div>
+
+        </div>
     </div>
 
-    <h4>Disabled sleeper agents</h4>
-    <div>
 
-    </div>
+    <script>
+        const lastLogs = {};
 
-    
+        async function updateLogs(name) {
+            const div = document.getElementById(`${name}-logs`);
+
+            const response = await fetch(`http://localhost:8008/log?name=${name}`);
+            let logs = await response.json();
+
+            const serialized = JSON.stringify(logs);
+
+            if (lastLogs[name] === serialized) {
+                return;
+            }
+
+            lastLogs[name] = serialized;
+
+            div.innerHTML = "";
+
+            logs = logs.reverse();
+            for (const line of logs) {
+                const p = document.createElement("p");
+                p.innerText =`${line.timestamp} : ${line.log} : ${line.proc ? "PROCCED" : "NO PROC"}`;
+                div.appendChild(p);
+            }
+        }
+
+        const agents = [
+            "crown", "dementia", "foxy", "hypnosis", "invisible", "laqueefa", "mudae", "perfect", "roach", "starwalker"
+        ];
+
+        for (const agent of agents) {
+            setInterval(() => updateLogs(agent), 5000);
+        }
+    </script>
+
+
 
 </body>
+
 </html>

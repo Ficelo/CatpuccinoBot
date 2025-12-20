@@ -9,7 +9,6 @@ from .agents.agent_perfect import *
 from .agents.agent_roach import *
 from .agents.agent_starwalker import *
 
-
 class SleeperAgentManager:
 
     def __init__(self):

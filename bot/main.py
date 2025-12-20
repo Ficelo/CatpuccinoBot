@@ -13,6 +13,8 @@ from fflogs_functions import *
 from sleeper_agents.sleeper_agent_manager import agentManager
 import threading
 import subprocess
+from server import MyHandler, PORT
+from http.server import HTTPServer
 
 load_dotenv()
 
@@ -253,9 +255,10 @@ async def baguettereact(ctx):
     for _ in range(0, 10):
         await message.channel.send("🥖", reference=message)
 
-def run_server_py():
-    subprocess.run(["python", "server.py"], check=True)
+def run_server():
+    with HTTPServer(("0.0.0.0", PORT), MyHandler) as server:
+        server.serve_forever()
 
-threading.Thread(target=run_server_py, daemon=True).start()
+threading.Thread(target=run_server, daemon=True).start()
 
 bot.run(os.getenv("API_KEY"))

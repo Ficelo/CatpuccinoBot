@@ -77,7 +77,7 @@
         async function updateLogs(name) {
             const div = document.getElementById(`${name}-logs`);
 
-            const response = await fetch(`http://localhost:8008/log?name=${name}`);
+            const response = await fetch(`/log?name=${name}`);
             let logs = await response.json();
 
             const serialized = JSON.stringify(logs);

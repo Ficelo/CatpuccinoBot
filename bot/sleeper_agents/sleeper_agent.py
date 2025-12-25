@@ -4,12 +4,17 @@ import asyncio
 import json
 from log_manager import logManager
 from log import AgentLog
+from settings import *
 
 
 def isAgentEnabled(name):
     # Add real logic here
-    options_file = "/app/options.json"
-    return True
+    disabled_agents = []
+
+    
+    data = get_options()
+    disabled_agents = data["disabled_sleeper_agents"]
+    return (name not in disabled_agents)
 
 class SleeperAgent:
     

@@ -7,6 +7,14 @@ import json
 
 PORT = 8008
 
+def send_headers(object, content_type):
+    object.send_response(200)
+    object.send_header('Content-Type', content_type)
+    object.send_header('Access-Control-Allow-Origin', '*')
+    object.send_header("Access-Control-Allow-Methods", "GET, OPTIONS")
+    object.send_header("Access-Control-Allow-Headers", "Content-Type")
+    object.end_headers()
+
 class MyHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path == '/':
@@ -21,12 +29,7 @@ class MyHandler(SimpleHTTPRequestHandler):
             parsed = urlparse(self.path)
             name = parse_qs(parsed.query).get("name", ["foxy"])[0]
 
-            self.send_response(200)
-            self.send_header('Content-Type', 'application/json')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.send_header("Access-Control-Allow-Methods", "GET, OPTIONS")
-            self.send_header("Access-Control-Allow-Headers", "Content-Type")
-            self.end_headers()
+            send_headers(self, 'application/json')
 
             logs = [
                 log.generate_log()
@@ -43,12 +46,7 @@ class MyHandler(SimpleHTTPRequestHandler):
 
             options = get_options()
 
-            self.send_response(200)
-            self.send_header('Content-Type', 'text/plain')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.send_header("Access-Control-Allow-Methods", "GET, OPTIONS")
-            self.send_header("Access-Control-Allow-Headers", "Content-Type")
-            self.end_headers()
+            send_headers(self, 'text/plain')
 
             if name in options["disabled_sleeper_agents"]:
                 options["disabled_sleeper_agents"].remove(name)
@@ -65,12 +63,7 @@ class MyHandler(SimpleHTTPRequestHandler):
 
             options = get_options()
 
-            self.send_response(200)
-            self.send_header('Content-Type', 'text/plain')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.send_header("Access-Control-Allow-Methods", "GET, OPTIONS")
-            self.send_header("Access-Control-Allow-Headers", "Content-Type")
-            self.end_headers()
+            send_headers(self, 'text/plain')
 
             if name not in options["disabled_sleeper_agents"]:
                 options["disabled_sleeper_agents"].append(name)
@@ -79,5 +72,21 @@ class MyHandler(SimpleHTTPRequestHandler):
             else:
                 self.wfile.write(f"{name} is already disabled".encode('utf-8'))
         
+
+        elif self.path.startswith('/status'):
+
+            parsed = urlparse(self.path)
+            name = parse_qs(parsed.query).get("name", ["foxy"])[0]
+
+            options = get_options()
+        
+            send_headers(self, 'application/json')
+
+            self.wfile.write(json.dumps({
+                "enabled": name not in options["disabled_sleeper_agents"],
+                "disabled": name in options["disabled_sleeper_agents"]
+            }).encode('utf-8'))
+
+
         else:
             super().do_GET()

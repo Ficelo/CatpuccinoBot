@@ -8,10 +8,7 @@ from settings import *
 
 
 def isAgentEnabled(name):
-    # Add real logic here
     disabled_agents = []
-
-    
     data = get_options()
     disabled_agents = data["disabled_sleeper_agents"]
     return (name not in disabled_agents)
@@ -41,7 +38,7 @@ class SleeperAgent:
         roll = random.randint(1, self.proc_chance_large)
         self.log = AgentLog(f"{self.name} : rolled {roll}, {self.proc_chance_small}/{self.proc_chance_large} chance")
         return roll <= self.proc_chance_small
-
+        
     async def run(self):
         if self.message is None:
             print("No message")

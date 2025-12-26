@@ -75,6 +75,9 @@
             const logsDiv = clone.querySelector(".logs");
             logsDiv.id = `${agent}-logs`;
 
+            const agentStatus = clone.querySelector(".status");
+            agentStatus.id = `${agent}-status`;
+
             const statusEl = clone.querySelector(".status");
             const enableBtn = clone.querySelector(".enable-btn");
             const disableBtn = clone.querySelector(".disable-btn");
@@ -93,9 +96,11 @@
         async function toggleAgent(action, name, statusEl) {
             try {
                 const response = await fetch(`/${action}?name=${name}`);
-                const text = await response.text();
+                const statusResponse = await fetch(`/status?name={name}`);
+                
+                const status = await statusResponse.json();
 
-                statusEl.innerText = `Status : ${text}`;
+                statusEl.innerText = `Status : ${status.enabled ? "Enabled" : "Disabled"}`;
             } catch (err) {
                 statusEl.innerText = "Status : ERROR";
             }
@@ -103,9 +108,15 @@
 
         async function updateLogs(name) {
             const div = document.getElementById(`${name}-logs`);
+            const statusP = document.getElementById(`${name}-status`)
 
             const response = await fetch(`/log?name=${name}`);
             let logs = await response.json();
+
+            const statusResponse = await fetch(`/status?name=${name}`);    
+            const status = await statusResponse.json();
+
+            statusP.innerText = `Status : ${status.enabled ? "Enabled" : "Disabled"}`;
 
             const serialized = JSON.stringify(logs);
             if (lastLogs[name] === serialized) return;

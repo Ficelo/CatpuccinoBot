@@ -321,7 +321,7 @@ export async function makeCompatibility(image1Path, image2Path) {
         ])
         .toFile("." + resultPath)
 
-    return "." + resultPath;
+   return "." + resultPath;
 
 }
 

@@ -8,6 +8,7 @@ from .agents.agent_mudae import *
 from .agents.agent_perfect import *
 from .agents.agent_roach import *
 from .agents.agent_starwalker import *
+from .agents.agent_gaius import *
 
 class SleeperAgentManager:
 
@@ -37,3 +38,4 @@ agentManager.add_agent(AgentMudae("mudae", 1, 100, 50))
 agentManager.add_agent(AgentPerfect("perfect", 10, 100, 0))
 agentManager.add_agent(AgentRoach("roach", 10, 100, 0))
 agentManager.add_agent(AgentStarWalker("starwalker", 1, 100, 500))
+agentManager.add_agent(AgentGaius("gaius", 100, 100, 0))

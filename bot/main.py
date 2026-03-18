@@ -14,6 +14,7 @@ from sleeper_agents.sleeper_agent_manager import agentManager
 import threading
 from server import MyHandler, PORT
 from http.server import HTTPServer
+import json
 
 load_dotenv()
 
@@ -56,7 +57,6 @@ async def on_message(message):
 
     agentManager.set_message(message)
     await agentManager.run_agents()
-
 
 @bot.command()
 async def progress(ctx, static=""):
@@ -195,6 +195,18 @@ async def inponkers(ctx, size):
     ponker_height = 86.9
     converted = round((float(size) / ponker_height), 2);
     await ctx.send(f"{size}cm is {converted} Ponkers")
+
+@bot.command()
+async def getxivinfo(ctx):
+
+    with open("options.json", "r") as f:
+        options = json.load(f)
+
+    for user in options["registered_users"]:
+        if user["discord_id"] == ctx.author.name:
+            await ctx.send(user)
+            return
+
     
 
 @bot.command()

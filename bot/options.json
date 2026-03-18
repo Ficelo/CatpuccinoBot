@@ -1,1 +1,53 @@
-{"disabled_sleeper_agents": [], "registered_users": [{"discord_id": "", "ffxiv_id": "", "server": "", "ffxiv_name": ""}], "statics": [{"name": "Catpuccino Meowfare", "id": "135583"}]}
+{
+    "disabled_sleeper_agents": [],
+    "registered_users": [
+        {
+            "discord_id": "ficelo_",
+            "ffxiv_id": "38173609",
+            "server": "Raiden",
+            "ffxiv_name": "Ponker",
+            "ffxiv_surname": "Borgir"
+        },
+        {
+            "discord_id": "1tan",
+            "ffxiv_id": "46872666",
+            "server": "Raiden",
+            "ffxiv_name": "Sozarin",
+            "ffxiv_surname": "Azsuna"
+        },
+        {
+            "discord_id": "kay6789",
+            "ffxiv_id": "46872667",
+            "server": "Raiden",
+            "ffxiv_name": "Zulia",
+            "ffxiv_surname": "Azsuna"
+        },
+        {
+            "discord_id": "tinytyche",
+            "ffxiv_id": "31237715",
+            "server": "Raiden",
+            "ffxiv_name": "Marin",
+            "ffxiv_surname": "Ponmond"
+        },
+        {
+            "discord_id": "jestyr22",
+            "ffxiv_id": "45386841",
+            "server": "Raiden",
+            "ffxiv_name": "Lexi",
+            "ffxiv_surname": "Ponmond"
+        },
+        {
+            "discord_id": "kakku_keisari",
+            "ffxiv_id": "44351509",
+            "server": "Raiden",
+            "ffxiv_name": "Mikel",
+            "ffxiv_surname": "Milize"
+        }
+    ],
+    "statics": [
+        {
+            "name": "Catpuccino Meowfare",
+            "id": "135583"
+        }
+    ]
+}

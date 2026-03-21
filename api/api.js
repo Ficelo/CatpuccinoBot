@@ -3,13 +3,13 @@ import {
   nerdify,
   duncify,
   dimmadomify,
+  undertaleify,
   makeCompatibility2characters,
   makeCompatibilityOther,
   makeProgress
 } from "./imageFusion.js";
 
 import { getCodeFromName } from "./main.js";
-import fs from "fs";
 import path from "path";
 import express from "express";
 
@@ -20,7 +20,8 @@ const hatDict = {
   propeller: propellerize,
   nerd: nerdify,
   dunce: duncify,
-  dimmadome: dimmadomify
+  dimmadome: dimmadomify,
+  undertale: undertaleify
 };
 
 app.post("/hat", async (req, res) => {

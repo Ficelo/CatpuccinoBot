@@ -42,6 +42,34 @@
             "server": "Raiden",
             "ffxiv_name": "Mikel",
             "ffxiv_surname": "Milize"
+        },
+        {
+            "discord_id": "msen.",
+            "ffxiv_id": "41227883",
+            "server": "Raiden",
+            "ffxiv_name": "Msen",
+            "ffxiv_surname": "Atorius"
+        },
+        {
+            "discord_id": "smurfx_",
+            "ffxiv_id": "39289993",
+            "server": "Raiden",
+            "ffxiv_name": "Alien",
+            "ffxiv_surname": "Smurf"
+        },
+        {
+            "discord_id": "stasisdecay",
+            "ffxiv_id": "50792975",
+            "server": "Raiden",
+            "ffxiv_name": "Arne",
+            "ffxiv_surname": "Ymira"
+        },
+        {
+            "discord_id": ".yafaemi",
+            "ffxiv_id": "50802690",
+            "server": "Raiden",
+            "ffxiv_name": "Sol",
+            "ffxiv_surname": "Ymira"
         }
     ],
     "statics": [

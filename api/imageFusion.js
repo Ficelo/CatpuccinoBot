@@ -415,6 +415,35 @@ export async function makeProgress(fight, progress) {
     return "." + resultPath;
 
 }
+export async function makeUndertale(imagePath) {
+
+    const resultPath = imagePath.split(".").at(1) + ".png";
+
+    const {data : charBuffer} = await sharp(imagePath)
+    .toFormat("png")
+    .resize({
+        fit: sharp.fit.fill,
+        width: 45,
+        height: 35
+    })
+    .toBuffer({resolveWithObject: true});
+
+    await sharp("./bases/undertale.jpg")
+    .toFormat("png")
+    .composite(
+        [
+            {
+                input: charBuffer,
+                top: 100,
+                left: 473
+            }
+        ]
+    )
+    .toFile("." + resultPath);
+
+    return "." + resultPath;
+
+}
 
 export async function propellerize(character = { name: "ponker", code : 38173609}) {
     await getImageFromCode(character);
@@ -463,4 +492,13 @@ export async function makeCompatibilityOther(character1, other) {
 
     const resultPath = await makeCompatibility(image1Path, image2Path);
     return resultPath;
+}
+
+export async function undertaleify(character) {
+
+    const imagePath = await getImageFromCode(character);
+    const resultPath = await makeUndertale(imagePath);
+
+    return resultPath;
+
 }

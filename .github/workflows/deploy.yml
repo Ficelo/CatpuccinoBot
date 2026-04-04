@@ -1,37 +1,20 @@
-name: Deploy Bot
-on: 
+name: Deploy
+
+on:
   push:
     branches:
       - main
 
 jobs:
   deploy:
-    name: "Deploy to Server"
     runs-on: ubuntu-latest
+
     steps:
-      - name: Configure SSH
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v2
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+
+      - name: Trigger webhook
         run: |
-          mkdir -p ~/.ssh/
-          echo "$SSH_KEY" > ~/.ssh/deploy.key
-          chmod 600 ~/.ssh/deploy.key
-          cat >>~/.ssh/config <<END
-          Host deploy
-            HostName $SSH_HOST
-            User $SSH_USER
-            IdentityFile ~/.ssh/deploy.key
-            StrictHostKeyChecking no
-          END
-        env:
-          SSH_USER: ${{ secrets.DEPLOY_SSH_USER }}
-          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-          SSH_HOST: ${{ secrets.DEPLOY_SSH_HOST }}
-      - name: Pull latest version
-        run: ssh deploy 'cd catpuccinobot && git fetch --all && git reset --hard origin/main'
-      - name: Stop the bot
-        run: ssh deploy 'cd catpuccinobot && docker compose down'
-      - name: Restart the bot
-        run: ssh deploy 'cd catpuccinobot && docker compose up --build -d'
-
-
-
-
+          curl -X POST http://100.71.236.42:9000/hooks/deploy-bot

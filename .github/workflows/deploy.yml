@@ -17,4 +17,4 @@ jobs:
 
       - name: Trigger webhook
         run: |
-          curl -X POST http://100.71.236.42:9000/hooks/deploy-bot
+          curl -X POST http://${{ secrets.SERVER_IP }}:9000/hooks/deploy-bot

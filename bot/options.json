@@ -1,5 +1,5 @@
 {
-    "disabled_sleeper_agents": [],
+    "disabled_sleeper_agents": ["starwalker, hypnosis"],
     "registered_users": [
         {
             "discord_id": "ficelo_",

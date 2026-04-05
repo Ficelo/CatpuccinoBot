@@ -10,6 +10,7 @@ from .agents.agent_roach import *
 from .agents.agent_starwalker import *
 from .agents.agent_gaius import *
 from .agents.agent_undertale import *
+from .agents.agent_skeleton import *
 
 class SleeperAgentManager:
 
@@ -30,14 +31,15 @@ class SleeperAgentManager:
 
 agentManager = SleeperAgentManager()
 agentManager.add_agent(AgentCrown("crown", 100, 100, 0))
-agentManager.add_agent(AgentDementia("dementia", 0, 100, 10))
-agentManager.add_agent(AgentFoxy("foxy", 1, 100, 50))
-agentManager.add_agent(AgentHypnosis("hypnosis", 1, 100, 50))
+agentManager.add_agent(AgentDementia("dementia", 10, 100, 10))
+agentManager.add_agent(AgentFoxy("foxy", 1, 300, 50))
+agentManager.add_agent(AgentHypnosis("hypnosis", 0, 500, 50))
 agentManager.add_agent(AgentInvisible("invisible", 100, 100, 0))
-agentManager.add_agent(AgentLaQueefa("laqueefa", 100, 100, 0))
-agentManager.add_agent(AgentMudae("mudae", 1, 100, 50))
+agentManager.add_agent(AgentLaQueefa("laqueefa", 10, 100, 0))
+agentManager.add_agent(AgentMudae("mudae", 1, 100, 100))
 agentManager.add_agent(AgentPerfect("perfect", 10, 100, 0))
 agentManager.add_agent(AgentRoach("roach", 10, 100, 0))
-agentManager.add_agent(AgentStarWalker("starwalker", 1, 100, 500))
+agentManager.add_agent(AgentStarWalker("starwalker", 0, 100, 500))
 agentManager.add_agent(AgentGaius("gaius", 100, 100, 0))
 agentManager.add_agent(AgentUndertale("undertale", 10, 100, 0))
+agentManager.add_agent(AgentSkeleton("skeleton", 1, 100, 300))

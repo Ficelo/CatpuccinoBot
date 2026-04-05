@@ -5,7 +5,6 @@ class LogManager:
 
     def add_agent(self, agent_name):
         self._logs[agent_name] = []
-        print(self._logs)
 
     def get_logs(self, agent_name):
         return self._logs[agent_name]

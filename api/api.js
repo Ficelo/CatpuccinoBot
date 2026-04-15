@@ -9,9 +9,16 @@ import {
   makeProgress
 } from "./imageFusion.js";
 
-import { getCodeFromName } from "./main.js";
+import { getCodeFromName, getCodeFromNameOnLodestone } from "./main.js";
+import { formatName } from "./utils.js";
+
 import path from "path";
 import express from "express";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const databaseUrl = process.env.DATABASE_API_URL;
 
 const app = express();
 app.use(express.json());
@@ -134,6 +141,41 @@ app.post("/compatibility", async (req, res) => {
     });
   }
 });
+
+
+app.post("/register", async (req, res) => {
+  try {
+    
+    console.log(req.body);
+
+    const charCode = await getCodeFromNameOnLodestone(req.body.name, req.body.surname, req.body.server);
+    
+    if (charCode) {
+
+      const result = await fetch(`${databaseUrl}/characters`, {
+        method: 'POST',
+        body: JSON.stringify({
+          discord_id: req.body.discord_id,
+          name: formatName(req.body.name),
+          surname: formatName(req.body.surname),
+          server: formatName(req.body.server),
+          ffxiv_id: charCode
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      res.json(result); 
+
+
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json( { error : 'Internal server error in register' });
+  }
+});
+          
 
 app.listen(3000, () => {
   console.log("Server running on port 3000");

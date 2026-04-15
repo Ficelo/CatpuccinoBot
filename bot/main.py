@@ -266,6 +266,33 @@ async def baguettereact(ctx):
     for _ in range(0, 10):
         await message.channel.send("🥖", reference=message)
 
+
+@bot.command()
+async def addme(ctx, name, surname, server):
+
+    data = {
+        'name': name,
+        'surname': surname,
+        'server': server,
+        'discord_id' : ctx.message.author.name
+    }
+
+    async with ctx.typing():
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.post(f"{api_url}/register", json=data) as response:
+                    response_text = await response.text()
+
+                    if response.status != 200:
+                        await ctx.send(f"Error {response.status}: {response_text}")
+                        return
+
+        except aiohttp.ClientError as err:
+            await ctx.send(f"Error: {err}")
+            return
+
+    await ctx.send(response_text)
+
 def run_server():
     with HTTPServer(("0.0.0.0", PORT), MyHandler) as server:
         server.serve_forever()

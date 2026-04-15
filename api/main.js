@@ -1,6 +1,10 @@
 import puppeteer from "puppeteer";
-import { getImageFromCode, addProppellerHat, propellerize } from "./imageFusion.js";
-import fs from "fs";
+import dotenv from "dotenv";
+import { formatName } from "./utils.js";
+
+dotenv.config();
+
+const databaseApiUrl = process.env.DATABASE_API_URL
 
 const patches = [
   { patch: "2.0", achievement: "Leaving Limsa Lominsa" },
@@ -142,10 +146,8 @@ const dc_from_server = {
 } 
 
 const reversedPatches = patches.reverse();
-const ponkerCode = 38173609;
-const MikelCode = 44351509;
 
-export async function getCodeFromName(name, surname, server) {
+export async function getCodeFromNameOnLodestone(name, surname, server) {
 
   const browser = await puppeteer.launch({
     headless: true,
@@ -186,6 +188,19 @@ export async function getCodeFromName(name, surname, server) {
 
   await browser.close();
   return results[0] || "";
+
+}
+
+export async function getCodeFromName(name, surname, server) {
+
+    await fetch("http://" + databaseApiUrl + "/characters/" + formatName(name)).then(
+        (response) => {
+            console.log(response.json())
+            if (response.json().ffxiv_id) return ffxiv_id;
+        }
+    );
+
+    return await getCodeFromNameOnLodestone(name, surname, server);
 
 }
 

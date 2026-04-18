@@ -1,0 +1,20 @@
+{
+  "name": "catpuccinodatabase",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@primeuix/themes": "^2.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "pg-promise": "^12.6.2",
+    "primeng": "^21.1.5"
+  }
+}

@@ -162,6 +162,6 @@ app.get("/allowed_channel/:agent_name", async (req, res) => {
   }
 });
 
-app.listen(3001, () => {
+app.listen(3002, () => {
   console.log("Catpuccino backend running on 3001");
 });

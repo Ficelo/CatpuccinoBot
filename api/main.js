@@ -192,16 +192,18 @@ export async function getCodeFromNameOnLodestone(name, surname, server) {
 }
 
 export async function getCodeFromName(name, surname, server) {
+    
+    const response = await fetch("http://" + databaseApiUrl + "/characters/" + formatName(name));
 
-    await fetch("http://" + databaseApiUrl + "/characters/" + formatName(name)).then(
-        (response) => {
-            console.log(response.json())
-            if (response.json().ffxiv_id) return ffxiv_id;
-        }
-    );
+    const data = await response.json();
+
+    console.log(data);
+
+    if (data.ffxiv_id) {
+        return data.ffxiv_id;
+    }
 
     return await getCodeFromNameOnLodestone(name, surname, server);
-
 }
 
 async function getAllFcNames() {

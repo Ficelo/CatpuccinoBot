@@ -40,7 +40,7 @@ services:
     container_name: database
     restart: unless-stopped
     ports:
-      - "3001:3001"
+      - "3002:3002"
     platform: linux/amd64
     shm_size: '1gb'
     environment:

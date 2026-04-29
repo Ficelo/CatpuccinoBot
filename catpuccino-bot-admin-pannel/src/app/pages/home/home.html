@@ -1,0 +1,16 @@
+<div class="global-stats">
+
+</div>
+
+<div>
+ <div class="agent-stats">
+  <div class="agent-stats">
+    @for (agent of agents$ | async; track agent) {
+      <div>{{ agent.name }}</div>
+    }
+</div>
+ </div>
+ <div class="user-stats">
+
+ </div>
+</div>

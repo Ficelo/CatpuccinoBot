@@ -29,3 +29,19 @@ services:
       API_URL: "http://node-api:3000"
     volumes:
       - ./bot/options.json:/app/options.json
+
+  database:
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+      args:
+        TARGETOS: linux
+        TARGETARCH: amd64
+    container_name: database
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    platform: linux/amd64
+    shm_size: '1gb'
+    environment:
+      - NODE_ENV=production

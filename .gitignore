@@ -4,3 +4,4 @@ __pycache__
 api/images/*
 .DS_Store
 .env
+package-lock.json

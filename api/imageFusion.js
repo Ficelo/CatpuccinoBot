@@ -460,7 +460,6 @@ export async function makeQuote(imagePath, text) {
         </svg>
     `);
 
-    const opacity = 0.5;
 
     const avatar = await sharp(imagePath)
       .resize({
@@ -491,11 +490,10 @@ export async function makeQuote(imagePath, text) {
                     font-family: Arial, sans-serif;
                 }
             </style>
-            <text x="20" y="120" class="title">${text}</text>
+            <text x="20" y="120" class="title">"${text}"</text>
         </svg>
     `);
 
-    // 4. Create final canvas
     const finalImage = await sharp({
         create: {
             width: 600,

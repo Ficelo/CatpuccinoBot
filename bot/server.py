@@ -1,5 +1,5 @@
 from http.server import SimpleHTTPRequestHandler, HTTPServer
-from log_manager import logManager
+from logs.log_manager import logManager
 from urllib.parse import urlparse, parse_qs
 from settings import *
 import json

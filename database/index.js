@@ -162,6 +162,48 @@ app.get("/allowed_channel/:agent_name", async (req, res) => {
   }
 });
 
+app.get("/quotes", async (req, res) => {
+
+  try {
+
+    const data = await db.query(
+      'SELECT * FROM quotes WHERE text = $1',
+      [req.query.text]
+    );
+
+    if (!data) {
+      return res.status(404).json({ error : "Quote not found with text :" + req.query.text});
+    }
+
+    res.json(data);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error : 'Server error' });
+  }
+});
+
+app.post("/quotes", async (req, res) => {
+
+  try {
+
+    const data = await db.query(
+      'INSERT INTO quotes (id, text) VALUES ($1, $2)',
+      [req.body.id, req.body.text]
+    );
+
+   if (!data) {
+     return res.status(404).json({ error: 'Character not found' });
+   }
+
+    res.json(data);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error : 'Server error' });
+  }
+});
+
 app.listen(3002, () => {
-  console.log("Catpuccino backend running on 3001");
+  console.log("Catpuccino backend running on 3002");
 });

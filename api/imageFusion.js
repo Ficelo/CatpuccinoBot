@@ -5,8 +5,6 @@ import sharp from "sharp";
 import crypto from "crypto";
 import fetch from "node-fetch";
 
-const ponker = {name : "Ponker Borgir", code : "38173609"}
-
 export async function getImageFromCode(character) {
 
     const browser = await puppeteer.launch({
@@ -31,13 +29,13 @@ export async function getImageFromCode(character) {
     );
 
     await page.goto(`https://eu.finalfantasyxiv.com/lodestone/character/${character.code}/`);
-    await page.setViewport({width : 1080, height: 1024});
+    await page.setViewport({ width: 1080, height: 1024 });
 
-    await page.waitForSelector('.character-block__face', {timeout : 10000});
+    await page.waitForSelector('.character-block__face', { timeout: 10000 });
 
     const imageLink = await page.$eval('img.character-block__face', img => {
         return img.src
-        }
+    }
     );
 
     https.get(imageLink, res => {
@@ -96,37 +94,37 @@ async function getOtherImagePath(other) {
 
 
 export async function addProppellerHat(imagePath) {
-    
+
     const resultPath = imagePath.split(".").at(1) + ".png"
-    
-    const {data : hatBuffer} = await sharp("./hats/propeller.png")
-    .resize({
-        fit : sharp.fit.fill,
-        width : 256,
-        height : 192
-    })
-    .toBuffer({resolveWithObject : true})
+
+    const { data: hatBuffer } = await sharp("./hats/propeller.png")
+        .resize({
+            fit: sharp.fit.fill,
+            width: 256,
+            height: 192
+        })
+        .toBuffer({ resolveWithObject: true })
 
 
     await sharp(imagePath)
         .extend(
             {
-                top : 64,
-                left : 0,
+                top: 64,
+                left: 0,
                 right: 0,
-                bottom : 0,
-                background : {r : 0, g : 0, b : 0, alpha : 0}
+                bottom: 0,
+                background: { r: 0, g: 0, b: 0, alpha: 0 }
             }
         )
         .toFormat("png")
         .composite(
             [{
-                input : hatBuffer,
-                top : 0,
-                left : 0
+                input: hatBuffer,
+                top: 0,
+                left: 0
             }])
         .toFile("." + resultPath);
-  
+
 
     return "." + resultPath;
 
@@ -135,33 +133,33 @@ export async function addProppellerHat(imagePath) {
 export async function addNerd(imagePath) {
     const resultPath = imagePath.split(".").at(1) + ".png"
 
-    const {data : fingerBuffer} = await sharp("./hats/finger.png")
-        .resize({
-            fit : sharp.fit.fill,
-            width : 128,
-            height : 128
-        })
-        .toBuffer({resolveWithObject : true})
-
-    const {data : glassesBuffer} = await sharp("./hats/nerd-glasses.png")
+    const { data: fingerBuffer } = await sharp("./hats/finger.png")
         .resize({
             fit: sharp.fit.fill,
-            width : 192,
-            height : 98
+            width: 128,
+            height: 128
         })
-        .toBuffer({resolveWithObject : true})
+        .toBuffer({ resolveWithObject: true })
+
+    const { data: glassesBuffer } = await sharp("./hats/nerd-glasses.png")
+        .resize({
+            fit: sharp.fit.fill,
+            width: 192,
+            height: 98
+        })
+        .toBuffer({ resolveWithObject: true })
 
     await sharp(imagePath)
         .toFormat("png")
         .composite([
             {
-                input : glassesBuffer,
-                top : 98,
-                left : 32
+                input: glassesBuffer,
+                top: 98,
+                left: 32
             },
             {
-                input : fingerBuffer,
-                top : 128,
+                input: fingerBuffer,
+                top: 128,
                 left: -32
             }
         ])
@@ -175,33 +173,33 @@ export async function addDunce(imagePath) {
 
     const resultPath = imagePath.split(".").at(1) + ".png"
 
-    const {data : hatBuffer} = await sharp("./hats/dunce.png")
-    .resize({
-        fit : sharp.fit.fill,
-        width : 192,
-        height : 228
-    })
-    .toBuffer({resolveWithObject : true})
+    const { data: hatBuffer } = await sharp("./hats/dunce.png")
+        .resize({
+            fit: sharp.fit.fill,
+            width: 192,
+            height: 228
+        })
+        .toBuffer({ resolveWithObject: true })
 
     await sharp(imagePath)
         .extend(
             {
-                top : 96,
-                left : 0,
+                top: 96,
+                left: 0,
                 right: 0,
-                bottom : 0,
-                background : {r : 0, g : 0, b : 0, alpha : 0}
+                bottom: 0,
+                background: { r: 0, g: 0, b: 0, alpha: 0 }
             }
         )
         .toFormat("png")
         .composite(
             [{
-                input : hatBuffer,
-                top : 0,
-                left : 32
+                input: hatBuffer,
+                top: 0,
+                left: 32
             }])
         .toFile("." + resultPath);
-  
+
 
     return "." + resultPath;
 
@@ -211,35 +209,35 @@ export async function addDimmadome(imagePath) {
 
     const resultPath = imagePath.split(".").at(1) + ".png";
 
-    const {data : hatBuffer} = await sharp("./hats/dimmadome.png")
-    .resize({
-        fit: sharp.fit.fill,
-        width: 256,
-        height: 900
-    })
-    .toBuffer({resolveWithObject: true})
+    const { data: hatBuffer } = await sharp("./hats/dimmadome.png")
+        .resize({
+            fit: sharp.fit.fill,
+            width: 256,
+            height: 900
+        })
+        .toBuffer({ resolveWithObject: true })
 
     await sharp(imagePath)
-    .extend(
-        {
-            top: (900 - 160),
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: {r: 0, g: 0, b: 0, alpha: 0}
-        }
-    )
-    .toFormat("png")
-    .composite(
-        [
+        .extend(
             {
-                input: hatBuffer,
-                top: 0,
-                left: 0
+                top: (900 - 160),
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: { r: 0, g: 0, b: 0, alpha: 0 }
             }
-        ]
-    )
-    .toFile("." + resultPath);
+        )
+        .toFormat("png")
+        .composite(
+            [
+                {
+                    input: hatBuffer,
+                    top: 0,
+                    left: 0
+                }
+            ]
+        )
+        .toFile("." + resultPath);
 
     return "." + resultPath;
 
@@ -269,59 +267,59 @@ export async function makeCompatibility(image1Path, image2Path) {
         </svg>`
     );
 
-    const {data : char1Buffer} = await sharp(image1Path)
+    const { data: char1Buffer } = await sharp(image1Path)
         .toFormat("png")
         .resize({
-            fit : sharp.fit.fill,
-            width : 256,
-            height : 256
+            fit: sharp.fit.fill,
+            width: 256,
+            height: 256
         })
-        .toBuffer({resolveWithObject : true});
+        .toBuffer({ resolveWithObject: true });
 
-    const {data : char2Buffer} = await sharp(image2Path)
+    const { data: char2Buffer } = await sharp(image2Path)
         .toFormat("png")
         .resize({
-            fit : sharp.fit.fill,
-            width : 256,
-            height : 256
+            fit: sharp.fit.fill,
+            width: 256,
+            height: 256
         })
-        .toBuffer({resolveWithObject : true});
+        .toBuffer({ resolveWithObject: true });
 
-    const {data : heartBuffer} = await sharp("./hats/heart.png")
+    const { data: heartBuffer } = await sharp("./hats/heart.png")
         .toFormat("png")
         .resize({
-            fit : sharp.fit.fill,
-            width : 256,
-            height : 256
+            fit: sharp.fit.fill,
+            width: 256,
+            height: 256
         })
-        .toBuffer({resolveWithObject : true});
-    
+        .toBuffer({ resolveWithObject: true });
+
     await sharp("./bases/base 512.png")
         .toFormat("png")
         .composite([
             {
-                input : char1Buffer,
-                top : 0,
-                left : 0
+                input: char1Buffer,
+                top: 0,
+                left: 0
             },
             {
-                input : char2Buffer,
-                top : 0,
-                left : 256
+                input: char2Buffer,
+                top: 0,
+                left: 256
             },
             {
-                input : heartBuffer,
-                top : 0,
-                left : 128
+                input: heartBuffer,
+                top: 0,
+                left: 128
             },
             {
-                input : textedSVG,
-                gravity : "center"
+                input: textedSVG,
+                gravity: "center"
             }
         ])
         .toFile("." + resultPath)
 
-   return "." + resultPath;
+    return "." + resultPath;
 
 }
 
@@ -363,35 +361,35 @@ export async function makeProgress(fight, progress) {
         </svg>`
     );
 
-    const {data : frame} = await sharp("./bases/progress-frame.svg")
+    const { data: frame } = await sharp("./bases/progress-frame.svg")
         .toFormat("png")
         .resize({
-            fit : sharp.fit.fill,
-            width : 500,
-            height : 100
+            fit: sharp.fit.fill,
+            width: 500,
+            height: 100
         })
-        .toBuffer({resolveWithObject : true});
+        .toBuffer({ resolveWithObject: true });
 
-    const {data : ultimaBuffer} = await sharp("./hats/ultima.jpg")
+    const { data: ultimaBuffer } = await sharp("./hats/ultima.jpg")
         .toFormat("png")
         .resize({
-            fit : sharp.fit.fill,
-            width : 80,
-            height : 80
+            fit: sharp.fit.fill,
+            width: 80,
+            height: 80
         })
-        .toBuffer({resolveWithObject : true});
-    
+        .toBuffer({ resolveWithObject: true });
+
     await sharp("./bases/base100x500.png")
         .toFormat("png")
         .composite([
             {
-                input : ultimaBuffer,
+                input: ultimaBuffer,
                 top: 10,
                 left: 10
             },
             {
-                input : percentBarSVG,
-                top : 50,
+                input: percentBarSVG,
+                top: 50,
                 left: 102
             },
             {
@@ -419,33 +417,104 @@ export async function makeUndertale(imagePath) {
 
     const resultPath = imagePath.split(".").at(1) + ".png";
 
-    const {data : charBuffer} = await sharp(imagePath)
-    .toFormat("png")
-    .resize({
-        fit: sharp.fit.fill,
-        width: 45,
-        height: 35
-    })
-    .toBuffer({resolveWithObject: true});
+    const { data: charBuffer } = await sharp(imagePath)
+        .toFormat("png")
+        .resize({
+            fit: sharp.fit.fill,
+            width: 45,
+            height: 35
+        })
+        .toBuffer({ resolveWithObject: true });
 
     await sharp("./bases/undertale.jpg")
-    .toFormat("png")
-    .composite(
-        [
-            {
-                input: charBuffer,
-                top: 100,
-                left: 473
-            }
-        ]
-    )
-    .toFile("." + resultPath);
+        .toFormat("png")
+        .composite(
+            [
+                {
+                    input: charBuffer,
+                    top: 100,
+                    left: 473
+                }
+            ]
+        )
+        .toFile("." + resultPath);
 
     return "." + resultPath;
 
 }
 
-export async function propellerize(character = { name: "ponker", code : 38173609}) {
+export async function makeQuote(imagePath, text) {
+
+    const size = 256;
+    const resultPath = imagePath.split(".").at(1) + ".png";
+
+    const circleMask = Buffer.from(`
+        <svg width="${size}" height="${size}">
+            <defs>
+                <radialGradient id="fade" cx="50%" cy="50%" r="50%">
+                    <stop offset="40%" stop-color="black" stop-opacity="1" />
+                    <stop offset="100%" stop-color="black" stop-opacity="1" />
+                </radialGradient>
+            </defs>
+            <rect width="${size}" height="${size}" fill="url(#fade)" />
+        </svg>
+    `);
+
+    const opacity = 0.5;
+
+    const avatar = await sharp(imagePath)
+      .resize({
+        fit : sharp.fit.fill,
+        width : size,
+        height : size
+      })
+      .composite([{
+        input : Buffer.from([255,255,255,64]),
+        raw : {
+          width : 1,
+          height : 1,
+          channels : 4,
+        },
+        tile : true,
+        blend : 'dest-in'}])
+      .png()
+      .toBuffer();
+      
+
+
+    const textSvg = Buffer.from(`
+        <svg width="400" height="${size}">
+            <style>
+                .title { 
+                    fill: white; 
+                    font-size: 32px; 
+                    font-family: Arial, sans-serif;
+                }
+            </style>
+            <text x="20" y="120" class="title">${text}</text>
+        </svg>
+    `);
+
+    // 4. Create final canvas
+    const finalImage = await sharp({
+        create: {
+            width: 600,
+            height: size,
+            channels: 4,
+            background: { r: 0, g: 0, b: 0, alpha: 1 }
+        }
+    })
+        .composite([
+            { input: avatar, left: 0, top: 0 },
+            { input: textSvg, left: 260, top: 0 }
+        ])
+        .png()
+        .toFile("." + resultPath);
+
+    return "." + resultPath;
+}
+
+export async function propellerize(character = { name: "ponker", code: 38173609 }) {
     await getImageFromCode(character);
     const resultPath = await addProppellerHat(`./images/${character.name}.jpg`);
     return resultPath;
@@ -501,4 +570,11 @@ export async function undertaleify(character) {
 
     return resultPath;
 
+}
+
+export async function makeQuoteImage(imagePath, quoteText) {
+
+    const resultPath = await makeQuote(imagePath, quoteText);
+
+    return resultPath;
 }

@@ -1,0 +1,10 @@
+{
+  "venvPath": "./bot",
+  "venv": ".venv",
+  "executionEnvironments": [
+    {
+      "root": "./bot",
+      "extraPaths": ["./bot"]
+    }
+  ]
+}

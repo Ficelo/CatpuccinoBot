@@ -6,8 +6,11 @@ import {
   undertaleify,
   makeCompatibility2characters,
   makeCompatibilityOther,
-  makeProgress
+  makeProgress,
+  makeQuoteImage
 } from "./imageFusion.js";
+import https from "https";
+import fs from "fs";
 
 import { getCodeFromName, getCodeFromNameOnLodestone } from "./main.js";
 import { formatName } from "./utils.js";
@@ -30,6 +33,38 @@ const hatDict = {
   dimmadome: dimmadomify,
   undertale: undertaleify
 };
+
+function downloadImage(url, filePath) {
+  return new Promise((resolve, reject) => {
+    const file = fs.createWriteStream(filePath);
+
+    https.get(url, response => {
+      if (response.statusCode !== 200) {
+        file.close();
+        fs.unlink(filePath, () => {});
+        reject(new Error("Failed to fetch image " + response.statusCode));
+        return;
+      }
+
+      response.pipe(file);
+
+      file.on("finish", () => {
+        file.close(() => resolve(filePath));
+      });
+
+      file.on("error", err => {
+        fs.unlink(filePath, () => {});
+        reject(err);
+      });
+
+    }).on("error", err => {
+      file.close();
+      fs.unlink(filePath, () => {});
+      reject(err);
+    });
+  });
+}
+
 
 app.post("/hat", async (req, res) => {
   try {
@@ -58,6 +93,27 @@ app.post("/hat", async (req, res) => {
     });
 
     return res.sendFile(path.resolve(resultPath));
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      error: "An error occurred",
+      details: err.message
+    });
+  }
+});
+
+app.post("/quote", async (req, res) => {
+
+  try {
+    console.log(req.body);
+    const { text, author_avatar } = req.body;
+    
+    await downloadImage(author_avatar, "./images/avatar.png");
+      
+    const resultPath = await makeQuoteImage("./images/avatar.png", text);
+
+    return res.sendFile(path.resolve(resultPath));
+
   } catch (err) {
     console.error(err);
     return res.status(500).json({

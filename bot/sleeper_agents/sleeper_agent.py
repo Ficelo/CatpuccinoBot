@@ -1,9 +1,6 @@
-import discord
 import random
-import asyncio
-import json
-from log_manager import logManager
-from log import AgentLog
+from logs.log_manager import logManager
+from logs.log import AgentLog
 from settings import *
 
 

@@ -1,14 +1,13 @@
+import asyncio
 import discord
 from discord.ext import commands, tasks
 import re
 from io import BytesIO
 from dotenv import load_dotenv
 import os
-import time
 from datetime import datetime, timezone
 import json
 import aiohttp
-import asyncio
 from fflogs_functions import *
 from sleeper_agents.sleeper_agent_manager import agentManager
 import threading
@@ -33,6 +32,7 @@ with open(options_file, "r") as f:
 intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
+intents.reactions = True
 
 bot = commands.Bot(command_prefix="?", description=descrption, intents=intents)
 
@@ -207,4 +207,9 @@ def run_server():
 
 threading.Thread(target=run_server, daemon=True).start()
 
-bot.run(os.getenv("API_KEY"))
+async def main():
+    async with bot:
+        await bot.load_extension("cogs.quotes")
+        await bot.start(os.getenv("API_KEY"))
+
+asyncio.run(main())

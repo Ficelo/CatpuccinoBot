@@ -2,6 +2,15 @@ export function formatName(name) {
     return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
 }
 
+export function makeTextQuote(text) {
+
+  if (text.charAt(0) != '"' && text.charAt(text.length - 1) != '"') {
+    return '"' + text + '"';
+  }
+
+  return text;
+}
+
 export function wrapText(text, maxCharsPerLine = 22) {
 
   const words = text.split(" ");

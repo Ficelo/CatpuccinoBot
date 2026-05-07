@@ -4,7 +4,7 @@ import https from "https";
 import sharp from "sharp";
 import crypto from "crypto";
 import fetch from "node-fetch";
-import { wrapText } from "./utils.js";
+import { wrapText, makeTextQuote } from "./utils.js";
 
 export async function getImageFromCode(character) {
 
@@ -481,7 +481,7 @@ export async function makeQuote(imagePath, text) {
       .toBuffer();
       
 
-    const lines = wrapText(text);
+    const lines = wrapText(makeTextQuote(text));
 
     const tspans = lines.map((line, i) => `
         <tspan x="20" dy="${i === 0 ? 0 : 40}">
@@ -500,7 +500,7 @@ export async function makeQuote(imagePath, text) {
             </style>
 
             <text x="20" y="100" class="title">
-                "${tspans}"
+                ${tspans}
             </text>
         </svg>
     `);

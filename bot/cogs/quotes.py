@@ -24,6 +24,8 @@ class Quotes(commands.Cog):
         channel = self.bot.get_channel(payload.channel_id)
         message = await channel.fetch_message(payload.message_id)
 
+        print(message.content == "")
+
         if self.quote_channel_id != None:
             self.quote_channel_id = int(self.quote_channel_id)
         else:
@@ -31,7 +33,7 @@ class Quotes(commands.Cog):
             return
 
         for reaction in message.reactions:
-            if reaction.count <= 5 and payload.channel_id not in self.ignore_channels and not self.client.is_message_in_quotes(message.content):
+            if reaction.count <= 5 and payload.channel_id not in self.ignore_channels and not self.client.is_message_in_quotes(message.content) and message.content != "":
                 quote_channel = self.bot.get_channel(self.quote_channel_id)
 
                 data = {
@@ -54,7 +56,7 @@ class Quotes(commands.Cog):
                         return
 
                 img_bytes.seek(0)
-                await quote_channel.send(file=discord.File(img_bytes, filename="quote.png"))
+                await quote_channel.send(content=f"Og message : {message.jump_url}",file=discord.File(img_bytes, filename="quote.png"))
                 self.client.add_quote(payload.message_id, message.content)
                 return
 

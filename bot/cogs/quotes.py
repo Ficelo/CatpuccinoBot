@@ -33,7 +33,7 @@ class Quotes(commands.Cog):
             return
 
         for reaction in message.reactions:
-            if reaction.count <= 5 and payload.channel_id not in self.ignore_channels and not self.client.is_message_in_quotes(message.content) and message.content != "":
+            if reaction.count >= 5 and payload.channel_id not in self.ignore_channels and not self.client.is_message_in_quotes(message.content) and message.content != "":
                 quote_channel = self.bot.get_channel(self.quote_channel_id)
 
                 data = {

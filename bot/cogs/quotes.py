@@ -15,7 +15,7 @@ class Quotes(commands.Cog):
         self.bot = bot
         self.quote_channel_id = os.getenv("QUOTE_CHANNEL_ID")
         self.api_url = os.getenv("API_URL", "http://localhost:3000")
-        self.ignore_channels = []
+        self.ignore_channels = [713303906763014187, 1385259550059532419, 1378678807619436676, 1382399560508379247, 1445053975534637228, 1399714589024718910, 1437724259781967903, 1402303350682419322, 1498241900170182686, 1498242273459048499, 1498242037697478676, 1498242435359309985]
         self.client = Client("http://database:3002")
 
     
@@ -23,8 +23,6 @@ class Quotes(commands.Cog):
     async def on_raw_reaction_add(self, payload):
         channel = self.bot.get_channel(payload.channel_id)
         message = await channel.fetch_message(payload.message_id)
-
-        print(message.content == "")
 
         if self.quote_channel_id != None:
             self.quote_channel_id = int(self.quote_channel_id)

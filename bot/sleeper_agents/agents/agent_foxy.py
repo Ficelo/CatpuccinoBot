@@ -1,5 +1,6 @@
 from ..sleeper_agent import *
 import asyncio
+import discord
 
 class AgentFoxy(SleeperAgent):
     async def action(self):

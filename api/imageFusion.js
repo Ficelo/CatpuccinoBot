@@ -4,7 +4,7 @@ import https from "https";
 import sharp from "sharp";
 import crypto from "crypto";
 import fetch from "node-fetch";
-import { wrapText, makeTextQuote } from "./utils.js";
+import { escapeXml, makeTextQuote, wrapText } from "./utils.js";
 
 export async function getImageFromCode(character) {
 
@@ -105,6 +105,7 @@ export async function addProppellerHat(imagePath) {
             height: 192
         })
         .toBuffer({ resolveWithObject: true })
+
 
 
     await sharp(imagePath)
@@ -481,7 +482,9 @@ export async function makeQuote(imagePath, text) {
       .toBuffer();
       
 
-    const lines = wrapText(makeTextQuote(text));
+    const safeText = makeTextQuote(escapeXml(text));
+  
+    const lines = wrapText(safeText);
 
     const tspans = lines.map((line, i) => `
         <tspan x="20" dy="${i === 0 ? 0 : 40}">
@@ -490,18 +493,15 @@ export async function makeQuote(imagePath, text) {
     `).join("");
 
     const textSvg = Buffer.from(`
-        <svg width="340" height="${size}">
+        <svg width="400" height="${size}">
             <style>
                 .title { 
                     fill: white; 
-                    font-size: 32px; 
+                    font-size: 28; 
                     font-family: Arial, sans-serif;
                 }
             </style>
-
-            <text x="20" y="100" class="title">
-                ${tspans}
-            </text>
+            <text x="15" y="120" class="title">${tspans}</text>
         </svg>
     `);
 

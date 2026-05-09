@@ -38,4 +38,11 @@ export function wrapText(text, maxCharsPerLine = 22) {
 
 }
 
-
+export function escapeXml(text) {
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&apos;");
+}

@@ -17,7 +17,7 @@ class SleeperAgent:
         self.proc_chance_small = proc_chance_small
         self.proc_chance_large = proc_chance_large
         self.debuff = debuff
-        self.log = None
+        self.log = AgentLog("")
         logManager.add_agent(self.name)
 
     def isEnabled(self):
@@ -50,10 +50,10 @@ class SleeperAgent:
             self.log.set_proc(True)
         
         logManager.add_log(self.name, self.log)
-        self.log = None
+        self.log = AgentLog("")
 
         self.reduce_proc_chance_large()
 
     # Override this to implement an agent
-    def action(self):
-        return True
+    async def action(self):
+        pass

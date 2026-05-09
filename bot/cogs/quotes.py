@@ -64,7 +64,7 @@ class Quotes(commands.Cog):
                 files.append(file)
 
             await quote_channel.send(files=files, reference=posted_quote)
-        self.client.add_quote(message.message_id, message.content)
+        self.client.add_quote(message.id, message.content)
         return
 
     @commands.Cog.listener()
@@ -73,7 +73,7 @@ class Quotes(commands.Cog):
         message = await channel.fetch_message(payload.message_id)
 
         for reaction in message.reactions:
-            if reaction.count >= 5:
+            if reaction.count >= 5 and channel.id not in self.ignore_channels and not self.client.is_message_in_quotes(message.content):
                 await self.make_quote_from_message(message)
                 return
 

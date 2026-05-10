@@ -1,4 +1,5 @@
 from ..sleeper_agent import *
+import discord
 
 class AgentPerfect(SleeperAgent):
     async def action(self):

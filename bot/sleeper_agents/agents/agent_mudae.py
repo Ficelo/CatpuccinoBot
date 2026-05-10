@@ -1,4 +1,5 @@
 from ..sleeper_agent import *
+import discord
 
 class AgentMudae(SleeperAgent):
     async def action(self):

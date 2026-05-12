@@ -1,4 +1,6 @@
 from ..sleeper_agent import *
+import discord
+import asyncio
 
 class AgentHypnosis(SleeperAgent):
     async def action(self):

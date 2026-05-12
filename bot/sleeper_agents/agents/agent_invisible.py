@@ -1,4 +1,5 @@
 from ..sleeper_agent import *
+import discord
 
 class AgentInvisible(SleeperAgent):
     async def action(self):

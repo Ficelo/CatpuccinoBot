@@ -1,4 +1,5 @@
 from ..sleeper_agent import *
+import discord
 import aiohttp
 from io import BytesIO
 import os

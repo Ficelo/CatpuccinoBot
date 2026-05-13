@@ -1,4 +1,5 @@
 from ..sleeper_agent import *
+import discord
 import asyncio
 
 class AgentSkeleton(SleeperAgent):

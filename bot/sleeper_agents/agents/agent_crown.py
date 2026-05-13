@@ -1,4 +1,6 @@
 from ..sleeper_agent import *
+import discord
+
 
 class AgentCrown(SleeperAgent):
     async def action(self):

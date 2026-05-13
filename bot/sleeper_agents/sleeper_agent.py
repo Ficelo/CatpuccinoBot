@@ -56,4 +56,4 @@ class SleeperAgent:
 
     # Override this to implement an agent
     async def action(self):
-        pass
+        return self.debuff > 100

@@ -1,4 +1,5 @@
 from ..sleeper_agent import *
+import discord
 
 class AgentStarWalker(SleeperAgent):
     async def action(self):

@@ -4,7 +4,7 @@ from discord.ext import commands, tasks
 import re
 from dotenv import load_dotenv
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import json
 from fflogs_functions import *
 from sleeper_agents.sleeper_agent_manager import agentManager
@@ -19,6 +19,7 @@ descrption = "A banger bot to do some stuff in the Catputccino discord"
 
 api_url = os.getenv("API_URL", "http://localhost:3000")
 options_file = "/app/options.json"
+up_channel_id = int(os.getenv("GOING_UP_CHANNEL", 0))
 
 options = ""
 sleeper_agent_names = ["mudae", "perfect", "invisible", "ponker", "la queefa", "dementia", "foxy", "hypnosis", "crown", "starwalker"]
@@ -34,11 +35,17 @@ intents.reactions = True
 
 bot = commands.Bot(command_prefix="?", description=descrption, intents=intents)
 
+
 messageLinkRegex = re.compile(r"https://discord.com/channels/(\d+)/(\d+)/(\d+)")
 
 @bot.event
 async def on_ready():
     print(f'We have logged in as {bot.user}')
+
+    up_channel = bot.get_channel(up_channel_id)
+    current_time = datetime.now() + timedelta(hours=2)
+    await up_channel.send(f"Bot started at : {current_time.strftime('%H:%M')}")
+
     if not update_server_time.is_running():
         update_server_time.start()
 

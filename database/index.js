@@ -129,7 +129,7 @@ app.post("/channels", async (req, res) => {
   try {
 
     const data = await db.query(
-      'INSERT INTO channels (name) VALUES ($1)',
+      'INSERT INTO channels (name) VALUES ($1) ON CONFLICT (id) DO NOTHING',
       [req.params.name]
     );
 
@@ -165,17 +165,25 @@ app.get("/allowed_channel/:agent_name", async (req, res) => {
 app.get("/quotes", async (req, res) => {
 
   try {
-
+    
     const data = await db.query(
-      'SELECT * FROM quotes WHERE text = $1',
-      [req.query.text]
+      'SELECT * FROM quotes WHERE id = $1',
+      [req.query.id]
     );
+    
 
-    if (!data) {
-      return res.status(404).json({ error : "Quote not found with text :" + req.query.text});
+    if (data.length === 0) {
+      return res.json({ exists: false})
     }
 
-    res.json(data);
+    if (!data) {
+      return res.status(404).json({ error : "Quote not found with id :" + req.query.id});
+    }
+
+    res.json({
+      exists: true,
+      quote: data[0]
+    });
 
   } catch (error) {
     console.error(error);

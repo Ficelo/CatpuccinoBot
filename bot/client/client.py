@@ -12,7 +12,8 @@ class Client:
 
     def _request(self, method, endpoint, **kwargs):
 
-        url = f"{self.base_url}/{endpoint}"
+        url = f"{self.base_url}{endpoint}"
+
         response = self.session.request(method, url, **kwargs)
 
         try:
@@ -30,10 +31,10 @@ class Client:
     def post(self, endpoint, json=None):
         return self._request("POST", endpoint, json=json)
 
-    def is_message_in_quotes(self, text):
-        message = self.get(f"/quotes", params = {"text" : text });
-        return message != [] 
+    def is_message_in_quotes(self, id):
+        response = self.get(f"/quotes", params = {"id" : str(id) });
+        return response.get("exists", False) 
 
     def add_quote(self, messageId, text):
-        message = self.post(f"/quotes", {"id" : messageId, "text" : text})
+        message = self.post(f"/quotes", {"id" : str(messageId), "text" : text})
         return message

@@ -26,7 +26,8 @@ class Quotes(commands.Cog):
                 1498241900170182686, 
                 1498242273459048499, 
                 1498242037697478676, 
-                1498242435359309985
+                1498242435359309985,
+                1499691114704277566
         ]
         self.client = Client("http://database:3002")
         self.processing_quotes = set()

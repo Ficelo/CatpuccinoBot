@@ -14,11 +14,29 @@ class Quotes(commands.Cog):
         self.bot = bot
         self.quote_channel_id = os.getenv("QUOTE_CHANNEL_ID")
         self.api_url = os.getenv("API_URL", "http://localhost:3000")
-        self.ignore_channels = [713303906763014187, 1385259550059532419, 1378678807619436676, 1382399560508379247, 1445053975534637228, 1399714589024718910, 1437724259781967903, 1402303350682419322, 1498241900170182686, 1498242273459048499, 1498242037697478676, 1498242435359309985]
+        self.ignore_channels = [
+                713303906763014187, 
+                1385259550059532419, 
+                1378678807619436676, 
+                1382399560508379247, 
+                1445053975534637228, 
+                1399714589024718910, 
+                1437724259781967903, 
+                1402303350682419322, 
+                1498241900170182686, 
+                1498242273459048499, 
+                1498242037697478676, 
+                1498242435359309985
+        ]
         self.client = Client("http://database:3002")
+        self.processing_quotes = set()
 
     async def make_quote_from_message(self, message, author=None):
 
+        if message.id in self.processing_quotes:
+            return
+        self.processing_quotes.add(message.id)
+        
         if self.quote_channel_id != None:
             self.quote_channel_id = int(self.quote_channel_id)
         else:
@@ -31,9 +49,6 @@ class Quotes(commands.Cog):
             text = message.content.split("\"")[1]
         else:
             text = message.content
-
-
-        print(text)
 
         data = {
             "text" : text, 
@@ -55,15 +70,20 @@ class Quotes(commands.Cog):
                 return
 
         img_bytes.seek(0)
-        posted_quote = await quote_channel.send(content=f"Og message : {message.jump_url}",file=discord.File(img_bytes, filename="quote.png"))
+        if data["text"] != "":
+            posted_quote = await quote_channel.send(content=f"Og message : {message.jump_url}",file=discord.File(img_bytes, filename="quote.png"))
+        else:
+            await quote_channel.send(content=f"Og message : {message.jump_url}")
         if message.attachments:
             files = []
 
             for attachement in message.attachments:
                 file = await attachement.to_file()
                 files.append(file)
-
-            await quote_channel.send(files=files, reference=posted_quote)
+            if data["text"] != "":
+                await quote_channel.send(files=files, reference=posted_quote)
+            else:
+                await quote_channel.send(files=files)
         self.client.add_quote(message.id, message.content)
         return
 
@@ -72,12 +92,16 @@ class Quotes(commands.Cog):
 
         channel = self.bot.get_channel(payload.channel_id)
         message = await channel.fetch_message(payload.message_id)
-
+        
         if message.guild.id != 1337925783720558652:
             return
 
+        if self.client.is_message_in_quotes(message.id):
+            return
+
         for reaction in message.reactions:
-            if reaction.count >= 5 and channel.id not in self.ignore_channels and not self.client.is_message_in_quotes(message.content):
+            print(reaction)
+            if reaction.count >= 5 and channel.id not in self.ignore_channels:
                 await self.make_quote_from_message(message)
                 return
 

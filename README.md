@@ -1,5 +1,3 @@
-Goofy ass bot for the Catpuccino FC discord server
-
 ## Features
 
 - Sleeper agents that will randomly activate and post slop depending on what you type in the server

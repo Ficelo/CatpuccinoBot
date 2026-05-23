@@ -93,7 +93,8 @@ class Quotes(commands.Cog):
 
         channel = self.bot.get_channel(payload.channel_id)
         message = await channel.fetch_message(payload.message_id)
-        
+
+
         if message.guild.id != 1337925783720558652:
             return
 
@@ -101,7 +102,10 @@ class Quotes(commands.Cog):
             return
 
         for reaction in message.reactions:
-            print(reaction)
+
+            if "fire_writing" not in reaction.emoji.name: 
+                return
+
             if reaction.count >= 5 and channel.id not in self.ignore_channels:
                 await self.make_quote_from_message(message)
                 return

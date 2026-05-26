@@ -1,5 +1,5 @@
 import { type Request, type Response, type NextFunction } from 'express';
-import type { Character } from '../models/characters.ts';
+import type { Character } from '../models/characters.js';
 
 const databaseUrl = "";
 

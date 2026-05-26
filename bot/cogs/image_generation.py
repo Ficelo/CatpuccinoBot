@@ -83,7 +83,5 @@ class ImageGeneration(commands.Cog):
         img_bytes.seek(0)
         await ctx.send(file=discord.File(img_bytes, filename="hat.png"))         
 
-        a
-
 async def setup(bot):
     await bot.add_cog(ImageGeneration(bot))

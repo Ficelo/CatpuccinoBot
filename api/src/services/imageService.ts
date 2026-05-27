@@ -2,6 +2,7 @@ import { createCanvas, loadImage } from 'canvas';
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from 'url';
+import { makeTextQuote } from '../utils/textUtils';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -148,4 +149,63 @@ export async function makeUndertale(baseImagePath: string) : Promise<string> {
 
 }
 
+export async function makeQuoteImage(avatarImagePath: string, text: string) : Promise<string> {
+
+  const resultPath = path.join(
+    path.dirname(avatarImagePath),
+    path.basename(avatarImagePath, path.extname(avatarImagePath))
+    + '.png'
+  );
+
+  const characterImage = await loadImage(path.join(avatarImagePath));
+  
+  const characterImageSize = 256;
+
+  const canvas = createCanvas(600, characterImageSize);
+  const ctx = canvas.getContext('2d');
+
+  ctx.fillStyle = 'black';
+  ctx.fillRect(0, 0, 600, characterImageSize);
+
+  ctx.drawImage(characterImage, 0, 0, characterImageSize, characterImageSize);
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+  ctx.fillRect(0, 0, characterImageSize, characterImageSize);
+
+  const quoteText = makeTextQuote(text);
+  const words = quoteText.split(' ');
+  const maxWidth = 600 - 275 - 10;
+  const lineHeight = 40;
+  const fontSize = 28;
+
+  ctx.fillStyle = 'white';
+  ctx.font = `${fontSize}px Arial`;
+
+  const lines: string[] = [];
+  let currentLine = '';
+
+  for (const word of words) {
+    const testLine = currentLine ? `${currentLine} ${word}` : word;
+    const { width } = ctx.measureText(testLine);
+
+    if (width > maxWidth && currentLine) {
+      lines.push(currentLine);
+      currentLine = word;
+    } else {
+      currentLine = testLine;
+    }
+  }
+
+  if (currentLine) lines.push(currentLine);
+
+  const totalTextHeight = lines.length * lineHeight;
+  const startY = (characterImageSize - totalTextHeight) / 2 + fontSize;
+
+  lines.forEach((line, i) => {
+    ctx.fillText(line, 275, startY + i * lineHeight);
+  });
+
+  const buffer = canvas.toBuffer('image/png');
+  await fs.promises.writeFile(resultPath, buffer);
+  return resultPath;
+}
 

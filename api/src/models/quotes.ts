@@ -1,4 +1,4 @@
 export interface Quote {
-  id: string,
+  authorAvatarUrl: string,
   text: string
 }

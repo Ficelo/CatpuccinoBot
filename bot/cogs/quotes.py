@@ -90,9 +90,14 @@ class Quotes(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
-
+        
         channel = self.bot.get_channel(payload.channel_id)
         message = await channel.fetch_message(payload.message_id)
+
+        # To bypass for testing
+        if False:
+            await self.make_quote_from_message(message)
+            return
         
         if message.guild.id != 1337925783720558652:
             return

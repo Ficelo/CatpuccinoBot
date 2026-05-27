@@ -5,7 +5,7 @@ export function formatName(name: string) : string {
 export function makeTextQuote(text : string) : string {
 
   if (text.charAt(0) != '"' && text.charAt(text.length - 1) != '"') {
-    return '"' + text + "'";
+    return '"' + text + '"';
   }
 
   return text;

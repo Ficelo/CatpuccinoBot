@@ -12,7 +12,10 @@ export async function downloadImage(imageUrl: string, filePath: string): Promise
       if (response.statusCode !== 200) {
         file.close();
         fs.unlink(filePath, () => {});
-        reject(new Error(`Failed to fetch image with link ${imageUrl} : ${response.statusCode}`));
+        
+        const imageUrlPng = imageUrl.replace('.gif', '.png');
+
+        reject(new Error(`Failed to fetch image with link ${imageUrlPng} : ${response.statusCode}`));
         return;
       }
 

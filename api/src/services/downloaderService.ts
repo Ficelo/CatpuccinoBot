@@ -8,12 +8,13 @@ export async function downloadImage(imageUrl: string, filePath: string): Promise
   return new Promise((resolve, reject) => {
 
     const file = fs.createWriteStream(filePath);
-    https.get(imageUrl, response => {
+    const imageUrlPng = imageUrl.replace('.gif', '.png');
+
+    https.get(imageUrlPng, response => {
       if (response.statusCode !== 200) {
         file.close();
         fs.unlink(filePath, () => {});
         
-        const imageUrlPng = imageUrl.replace('.gif', '.png');
 
         reject(new Error(`Failed to fetch image with link ${imageUrlPng} : ${response.statusCode}`));
         return;

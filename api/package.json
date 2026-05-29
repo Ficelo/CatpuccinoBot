@@ -2,19 +2,23 @@
   "name": "text-xiv-js",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "dotenv": "^17.4.0",
+    "canvas": "^3.2.3",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "node-fetch": "^3.3.2",
     "puppeteer": "^24.22.0",
     "sharp": "^0.34.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/jest": "^30.0.0",
+    "jest": "^30.4.2",
+    "ts-jest": "^29.4.11"
   }
 }

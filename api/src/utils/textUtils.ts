@@ -1,8 +1,8 @@
-export function formatName(name) {
-    return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+export function formatName(name: string) : string {
+  return name.substring(0,1).toUpperCase() + name.substring(1).toLowerCase();
 }
 
-export function makeTextQuote(text) {
+export function makeTextQuote(text : string) : string {
 
   if (text.charAt(0) != '"' && text.charAt(text.length - 1) != '"') {
     return '"' + text + '"';
@@ -11,7 +11,7 @@ export function makeTextQuote(text) {
   return text;
 }
 
-export function wrapText(text, maxCharsPerLine = 22) {
+export function wrapText(text : string, maxCharsPerLine : number = 22) : string[] {
 
   const words = text.split(" ");
   const lines = [];
@@ -36,13 +36,4 @@ export function wrapText(text, maxCharsPerLine = 22) {
 
   return lines;
 
-}
-
-export function escapeXml(text) {
-    return text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&apos;");
 }

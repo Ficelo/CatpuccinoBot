@@ -14,6 +14,8 @@ export async function addProppellerHat(baseImagePath: string) : Promise<string> 
     + '.png'
   );
 
+  console.log(baseImagePath);
+
   const characterImage = await loadImage(path.join(__dirname, '../../', baseImagePath));
   const hatImage = await loadImage(path.join(__dirname, '../../hats/propeller.png'));
 
@@ -141,6 +143,33 @@ export async function makeUndertale(baseImagePath: string) : Promise<string> {
 
   ctx.drawImage(undertaleImage, 0, 0, undertaleImage.width, undertaleImage.height);
   ctx.drawImage(characterImage, 473, 100, characterWidth, characterHeight);
+
+  const buffer = canvas.toBuffer('image/png');
+  await fs.promises.writeFile(resultPath, buffer);
+
+  return resultPath;
+
+}
+
+export async function makePregnant(baseImagePath: string) : Promise<string> {
+
+  const resultPath = path.join(
+    path.dirname(baseImagePath),
+    path.basename(baseImagePath, path.extname(baseImagePath))
+    + '.png'
+  );
+
+  const characterImage = await loadImage(path.join(__dirname, '../../', baseImagePath));
+  const pregnantImage = await loadImage(path.join(__dirname, '../../hats/mpreg.png'));
+
+  const characterWidth = 70;
+  const characterHeight = 70;
+
+  const canvas = createCanvas(pregnantImage.width, pregnantImage.height);
+  const ctx = canvas.getContext('2d');
+
+  ctx.drawImage(pregnantImage, 0, 0, pregnantImage.width, pregnantImage.height);
+  ctx.drawImage(characterImage, 45, 0, characterWidth, characterHeight);
 
   const buffer = canvas.toBuffer('image/png');
   await fs.promises.writeFile(resultPath, buffer);

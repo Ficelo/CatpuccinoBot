@@ -2,9 +2,6 @@
   "name": "text-xiv-js",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "type": "module",
   "keywords": [],
   "author": "",
@@ -19,6 +16,9 @@
     "sharp": "^0.34.3"
   },
   "devDependencies": {
-    "@types/express": "^5.0.6"
+    "@types/express": "^5.0.6",
+    "@types/jest": "^30.0.0",
+    "jest": "^30.4.2",
+    "ts-jest": "^29.4.11"
   }
 }

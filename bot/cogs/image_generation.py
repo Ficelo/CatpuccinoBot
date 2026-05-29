@@ -83,5 +83,32 @@ class ImageGeneration(commands.Cog):
         img_bytes.seek(0)
         await ctx.send(file=discord.File(img_bytes, filename="hat.png"))         
 
+    @commands.command()
+    async def makePregnant(self, ctx):
+
+        message = await ctx.channel.fetch_message(ctx.message.reference.message_id);
+
+        data = {
+                "avatar" : message.author.display_avatar.url
+        }
+        
+        async with ctx.typing():
+            try :
+                async with aiohttp.ClientSession() as session:
+                    async with session.post(f"{self.api_url}/hat/discord", json=data) as response:
+                        if response.status != 200:
+                            text = await response.text()
+                            text = text[:3000] + "\n\n...(truncated)" if len(text) > 3000 else text
+                            await ctx.send(f"Server error: {text}")
+                            return
+                        img_bytes = BytesIO(await response.read())
+            except aiohttp.ClientError as err:
+                await ctx.send(f"Error : {err}")
+                return
+
+        img_bytes.seek(0)
+        await ctx.send(file=discord.File(img_bytes, filename="hat.png"))         
+
+
 async def setup(bot):
     await bot.add_cog(ImageGeneration(bot))

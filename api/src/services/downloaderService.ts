@@ -2,12 +2,12 @@ import https from "https";
 import fs from "fs";
 import type { Character } from "../models/characters.js";
 import { BrowserService } from "./browserService.js";
+import { createCanvas, loadImage } from "canvas";
 
-export async function downloadImage(imageUrl: string, filePath: string) : Promise<string> {
-
+export async function downloadImage(imageUrl: string, filePath: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const file = fs.createWriteStream(filePath);
 
+    const file = fs.createWriteStream(filePath);
     https.get(imageUrl, response => {
       if (response.statusCode !== 200) {
         file.close();
@@ -19,14 +19,24 @@ export async function downloadImage(imageUrl: string, filePath: string) : Promis
       response.pipe(file);
 
       file.on("finish", () => {
-        file.close(() => resolve(filePath));
+        file.close(async () => {
+          try {
+            const image = await loadImage(filePath);
+            const canvas = createCanvas(image.width, image.height);
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(image, 0, 0);
+            fs.writeFileSync(filePath, canvas.toBuffer('image/png'));
+            resolve(filePath);
+          } catch (err) {
+            fs.unlink(filePath, () => {});
+            reject(err);
+          }
+        });
       });
-
       file.on("error", err => {
         fs.unlink(filePath, () => {});
         reject(err);
       });
-
     }).on("error", err => {
       file.close();
       fs.unlink(filePath, () => {});

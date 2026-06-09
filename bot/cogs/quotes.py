@@ -107,8 +107,8 @@ class Quotes(commands.Cog):
 
         for reaction in message.reactions:
 
-            if "fire_writing" not in reaction.emoji.name.lower(): 
-                return
+            if "fire_writing" not in reaction.emoji.name.lower() or "fire_writing" != reaction.emoji.name.lower(): 
+                continue
 
             if reaction.count >= 5 and channel.id not in self.ignore_channels:
                 await self.make_quote_from_message(message)

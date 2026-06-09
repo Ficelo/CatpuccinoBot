@@ -107,7 +107,8 @@ class Quotes(commands.Cog):
 
         for reaction in message.reactions:
 
-            if "fire_writing" not in reaction.emoji.name.lower() or "fire_writing" != reaction.emoji.name.lower(): 
+            if "fire_writing" not in reaction.emoji.name.lower(): 
+                print(f"message reacted with emoji {reaction.emoji.name}")
                 continue
 
             if reaction.count >= 5 and channel.id not in self.ignore_channels:

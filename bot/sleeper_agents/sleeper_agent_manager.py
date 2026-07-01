@@ -26,7 +26,6 @@ class SleeperAgentManager:
 
     async def run_agents(self):
         for agent in self._agents:
-            print(f"Running : {agent.name}")
             await agent.run()
 
 agentManager = SleeperAgentManager()

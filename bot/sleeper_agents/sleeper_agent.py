@@ -1,6 +1,6 @@
 import random
-from logs.log_manager import logManager
 from logs.log import AgentLog
+from logs.log_manager import LogManager
 from settings import *
 
 
@@ -17,8 +17,6 @@ class SleeperAgent:
         self.proc_chance_small = proc_chance_small
         self.proc_chance_large = proc_chance_large
         self.debuff = debuff
-        self.log = AgentLog("")
-        logManager.add_agent(self.name)
 
     def isEnabled(self):
         return isAgentEnabled(self.name)
@@ -33,8 +31,12 @@ class SleeperAgent:
 
     def proc(self):
         roll = random.randint(1, self.proc_chance_large)
-        self.log = AgentLog(f"{self.name} : rolled {roll}, {self.proc_chance_small}/{self.proc_chance_large} chance")
         return roll <= self.proc_chance_small
+
+    def make_log(self):
+        logManager = LogManager()
+        log = AgentLog(f"{self.name} : PROCCED {self.proc_chance_small}/{self.proc_chance_large} ", self.message.author.name)
+        logManager.add_log(log.generate_log())
         
     async def run(self):
         if self.message is None:
@@ -47,10 +49,6 @@ class SleeperAgent:
         procced = await self.action()
         if procced:
             self.proc_chance_large += self.debuff
-            self.log.set_proc(True)
-        
-        logManager.add_log(self.name, self.log)
-        self.log = AgentLog("")
 
         self.reduce_proc_chance_large()
 

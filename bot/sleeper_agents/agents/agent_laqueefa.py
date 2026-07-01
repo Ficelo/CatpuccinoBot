@@ -23,5 +23,6 @@ class AgentLaQueefa(SleeperAgent):
                     text[i] = " "
 
             await self.message.reply("".join(text))
+            self.make_log()
             return True
         return False

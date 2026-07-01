@@ -8,5 +8,6 @@ class AgentFoxy(SleeperAgent):
             msg = await self.message.reply(file=discord.File("/app/images/foxy-jumpscare.gif"))
             await asyncio.sleep(1)
             await msg.delete()
+            self.make_log()
             return True
         return False

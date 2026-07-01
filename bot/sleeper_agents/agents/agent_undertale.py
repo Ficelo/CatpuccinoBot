@@ -39,5 +39,6 @@ class AgentUndertale(SleeperAgent):
                     img_bytes.seek(0)
                     await self.message.reply(file=discord.File(img_bytes, filename="underale.png"))
             
+            self.make_log()
             return True
         return False

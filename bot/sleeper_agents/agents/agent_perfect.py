@@ -10,5 +10,6 @@ class AgentPerfect(SleeperAgent):
             await self.message.reply(file=discord.File("/app/images/alexander2.png"))
             await self.message.reply(file=discord.File("/app/images/alexander3.png"))
             await self.message.reply("RAAAAAAAAAAAAAA")
+            self.make_log()
             return True
         return False

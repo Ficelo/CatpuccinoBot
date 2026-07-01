@@ -8,5 +8,6 @@ class AgentSkeleton(SleeperAgent):
             msg = await self.message.reply(file=discord.File("/app/images/skeleton-running.gif"))
             await asyncio.sleep(1.5)
             await msg.delete()
+            self.make_log()
             return True
         return False

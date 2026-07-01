@@ -22,6 +22,7 @@ class AgentGaius(SleeperAgent):
             await self.message.reply("Only a man of power can rightly steer the course of civilization. And in this land of creeping mendacity, that one truth will prove its salvation.")
             await self.message.reply("Come, champion of Eorzea, face me! Your defeat shall serve as proof of my readiness to rule!".upper())
             await self.message.reply("It is only right that I should take your realm. For none among you has the power to stop me!".upper())
+            self.make_log()
             return True
             
         return False

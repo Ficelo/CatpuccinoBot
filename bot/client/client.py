@@ -32,9 +32,13 @@ class Client:
         return self._request("POST", endpoint, json=json)
 
     def is_message_in_quotes(self, id):
-        response = self.get(f"/quotes", params = {"id" : str(id) });
+        response = self.get(f"/quotes", params = {"id" : str(id) })
         return response.get("exists", False) 
 
     def add_quote(self, messageId, text):
         message = self.post(f"/quotes", {"id" : str(messageId), "text" : text})
         return message
+
+    def add_log(self, logJson):
+        log = self.post(f"/logs", json = {"log": str(logJson)})
+        return log

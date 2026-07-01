@@ -212,6 +212,27 @@ app.post("/quotes", async (req, res) => {
   }
 });
 
+app.post("/logs", async (req, res) => {
+
+  try {
+
+    const data = await db.query(
+      'INSERT INTO agent_logs (log) VALUES ($1)',
+      [req.params.log]
+    );
+
+    if(!data) {
+      return res.status(500).json({ error : 'Error uploading log' });
+    }
+
+    res.json(data);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error : 'Error uploading log' });
+  }
+});
+
 app.listen(3002, () => {
   console.log("Catpuccino backend running on 3002");
 });

@@ -1,15 +1,15 @@
+from client.client import Client
+
+
 class LogManager:
 
     def __init__(self):
-        self._logs = {}
+        self._logs = [] 
+        self.client = Client("http://database:3002")
 
-    def add_agent(self, agent_name):
-        self._logs[agent_name] = []
-
-    def get_logs(self, agent_name):
-        return self._logs[agent_name]
-
-    def add_log(self, agent_name, log):
-        self._logs[agent_name].append(log)
+    def add_log(self, log):
+        self._logs.append(log)
+        self.client.add_log(log.generate_log())
+        
 
 logManager = LogManager()

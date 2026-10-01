@@ -3,6 +3,7 @@ import path from "path";
 import fs from "fs";
 import { fileURLToPath } from 'url';
 import { makeTextQuote } from '../utils/textUtils';
+import { drawPerspectiveImage, type PerspectiveCorners } from './perspectiveService';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -238,3 +239,47 @@ export async function makeQuoteImage(avatarImagePath: string, text: string) : Pr
   return resultPath;
 }
 
+export async function makePonkerShockImage(imagePath: string) : Promise<string> {
+
+  const resultPath = path.join(
+    path.dirname(imagePath),
+    path.basename(imagePath, path.extname(imagePath)) + '.png'
+  );
+
+  const corners: PerspectiveCorners = {
+    topLeft: {
+      x: -99,
+      y: 135,
+    },
+
+    topRight: {
+      x: 304,
+      y: 119,
+    },
+
+    bottomRight: {
+      x: 496,
+      y: 377,
+    },
+
+    bottomLeft: {
+      x: 232,
+      y: 612,
+    },
+  };
+
+  const baseImage = await loadImage(path.join(__dirname, '../../bases/ponker_shock_base.png'));
+  const screenImage = await loadImage(imagePath);
+  const handImage = await loadImage(path.join(__dirname, '../../bases/ponker_shock_hand.png'));
+
+  const canvas = createCanvas(baseImage.width, baseImage.height);
+  const ctx = canvas.getContext('2d');
+
+  ctx.drawImage(baseImage, 0, 0);
+  drawPerspectiveImage(ctx, screenImage, corners);
+  ctx.drawImage(handImage, 0, 0, baseImage.width, baseImage.height);
+
+  await fs.promises.writeFile(resultPath, canvas.toBuffer('image/png'));
+  return resultPath;
+
+}

@@ -18,8 +18,7 @@ const hats : Map<string, Function> = new Map([
 export const addHat = async (req: Request, res: Response) => {
 
   try {
-
-
+    
     // TODO : add the function to go get the xiv id if it doesn't exist
     const character : Character = {
       name: req.body.name,

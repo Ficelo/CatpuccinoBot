@@ -109,6 +109,24 @@ class ImageGeneration(commands.Cog):
         img_bytes.seek(0)
         await ctx.send(file=discord.File(img_bytes, filename="hat.png"))         
 
+    @commands.command(name="ponkershock")
+    async def ponker_shock(self, ctx):
+        if not ctx.message.attachments:
+            await ctx.send("Attach an image to the command.")
+            return
+
+        attachment = ctx.message.attachments[0]
+        if attachment.content_type and not attachment.content_type.startswith("image/"):
+            await ctx.send("The attachment must be an image.")
+            return
+
+        await self.download_and_send_image(
+            ctx,
+            "ponker-shock",
+            {"image": attachment.url},
+            "ponker-shock"
+        )
+
 
 async def setup(bot):
     await bot.add_cog(ImageGeneration(bot))

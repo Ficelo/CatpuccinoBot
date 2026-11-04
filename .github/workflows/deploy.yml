@@ -32,14 +32,26 @@ jobs:
     needs:
       - bot-unit-tests
 
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
+
+    defaults:
+      run:
+        working-directory: /home/teiva/projects/catpuccinobot/CatpuccinoBot
 
     steps:
-      - name: Connect to Tailscale
-        uses: tailscale/github-action@v2
-        with:
-          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
-
-      - name: Trigger webhook
+      - name: Check repository
         run: |
-          curl -X POST http://${{ secrets.SERVER_IP }}:9000/hooks/deploy-bot
+          pwd
+          ls -la
+          git status
+
+      - name: Pull latest
+        run: |
+          git fetch origin master
+          git reset --hard origin/master
+
+      - name: Build and deploy
+        run: |
+          docker-compose down
+          docker-compose build
+          docker-compose up

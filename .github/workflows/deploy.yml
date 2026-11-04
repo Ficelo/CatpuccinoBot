@@ -36,7 +36,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: /home/teiva/projects/catpuccinobot/CatpuccinoBot
+        working-directory: /home/teiva/projets/catpuccinobot/CatpuccinoBot
 
     steps:
       - name: Check repository

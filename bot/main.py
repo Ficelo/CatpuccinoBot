@@ -43,7 +43,7 @@ async def on_ready():
     print(f'We have logged in as {bot.user}')
 
     up_channel = bot.get_channel(up_channel_id)
-    current_time = datetime.now() + timedelta(hours=2)
+    current_time = datetime.now() + timedelta(hours=3)
     await up_channel.send(f"Bot started at : {current_time.strftime('%H:%M')}")
 
     if not update_server_time.is_running():
